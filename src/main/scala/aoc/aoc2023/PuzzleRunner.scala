@@ -5,6 +5,7 @@ import aoc.aoc2023.day1.Day1Puzzle
 import aoc.aoc2023.day2.Day2Puzzle
 import aoc.aoc2023.day3.Day3Puzzle
 import aoc.aoc2023.day4.Day4Puzzle
+import aoc.aoc2023.day5.Day5Puzzle
 import aoc.aoc2023.day6.Day6Puzzle
 import aoc.aoc2023.day7.Day7Puzzle
 import aoc.aoc2023.day8.Day8Puzzle
@@ -25,6 +26,7 @@ object PuzzleRunner extends App {
     Day2Puzzle,
     Day3Puzzle,
     Day4Puzzle,
+    Day5Puzzle,
     Day6Puzzle,
     Day7Puzzle,
     Day8Puzzle,

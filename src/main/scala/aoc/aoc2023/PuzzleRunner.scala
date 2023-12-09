@@ -53,8 +53,8 @@ object PuzzleRunner extends App {
     val (part2Result, part2Time) = runPuzzlePart(puzzle, 2, inputFileName)
 
     println(s"Results of Day $day - ${puzzle.name}:")
-    println(s"    Part1: $part1Result ($part1Time ms)")
-    println(s"    Part2: $part2Result ($part2Time ms)")
+    println(f"    Part1: $part1Result%-20s ($part1Time ms)")
+    println(f"    Part2: $part2Result%-20s ($part2Time ms)")
   }
 
   puzzles.map(_.day).sorted.foreach { day => runPuzzle(day) }

@@ -1,11 +1,10 @@
 package aoctest.aoc2023test.day10
 
 import aoc.aoc2023.day10._
-import aoc.utils.FileUtils
 import aoctest.PuzzleTest
-import org.junit.{Assert, Ignore, Test}
+import org.junit.{Ignore, Test}
 
-@Ignore
+
 class TestDay10 extends PuzzleTest(Day10Puzzle) {
 
   @Test
@@ -40,6 +39,6 @@ class TestDay10 extends PuzzleTest(Day10Puzzle) {
 
   @Test
   def testDay10Part2real(): Unit = {
-    testPart2Real("0")
+    testPart2Real("471")
   }
 }

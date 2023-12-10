@@ -13,6 +13,8 @@ import aoc.aoc2023.day8.Day8Puzzle
 import aoc.aoc2023.day9.Day9Puzzle
 import aoc.utils.FileUtils
 
+import scala.util.{Failure, Success, Try}
+
 object PuzzleRunner extends App {
 
   private val notImplementedPuzzle: DailyPuzzle = new DailyPuzzle(0, "Not implemented") {
@@ -38,12 +40,19 @@ object PuzzleRunner extends App {
   def runPuzzlePart(puzzle: DailyPuzzle, part: Int, inputFileName: String): (String, Long) = {
     val lines = FileUtils.fileToLines(inputFileName)
     val startTime = System.currentTimeMillis()
-    val result = if (part == 1)
-      puzzle.calculatePart1(lines)
-    else if (part == 2)
-      puzzle.calculatePart2(lines)
-    else
-      throw new IllegalArgumentException("Unexpected part")
+
+    val result = Try({
+      if (part == 1)
+        puzzle.calculatePart1(lines)
+      else if (part == 2)
+        puzzle.calculatePart2(lines)
+      else
+        throw new IllegalArgumentException("Unexpected part")
+    }) match {
+      case Success(value)     => value
+      case Failure(exception) => exception.getMessage
+    }
+
     val deltaT = System.currentTimeMillis() - startTime
 
     (result, deltaT)
@@ -53,10 +62,11 @@ object PuzzleRunner extends App {
     val puzzle = puzzles.find(_.day == day).getOrElse(notImplementedPuzzle)
     val inputFileName = puzzle.inputPath
 
+    println(s"Results of Day $day - ${puzzle.name}:")
+    
     val (part1Result, part1Time) = runPuzzlePart(puzzle, 1, inputFileName)
     val (part2Result, part2Time) = runPuzzlePart(puzzle, 2, inputFileName)
 
-    println(s"Results of Day $day - ${puzzle.name}:")
     println(f"    Part1: $part1Result%-20s ($part1Time ms)")
     println(f"    Part2: $part2Result%-20s ($part2Time ms)")
   }

@@ -2,6 +2,7 @@ package aoc.aoc2023
 
 import aoc.DailyPuzzle
 import aoc.aoc2023.day1.Day1Puzzle
+import aoc.aoc2023.day10.Day10Puzzle
 import aoc.aoc2023.day2.Day2Puzzle
 import aoc.aoc2023.day3.Day3Puzzle
 import aoc.aoc2023.day4.Day4Puzzle
@@ -30,7 +31,8 @@ object PuzzleRunner extends App {
     Day6Puzzle,
     Day7Puzzle,
     Day8Puzzle,
-    Day9Puzzle
+    Day9Puzzle,
+    Day10Puzzle
   )
 
   def runPuzzlePart(puzzle: DailyPuzzle, part: Int, inputFileName: String): (String, Long) = {

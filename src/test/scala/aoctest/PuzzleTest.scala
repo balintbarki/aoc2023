@@ -7,11 +7,15 @@ import org.junit.Assert
 
 abstract class PuzzleTest(val puzzle: DailyPuzzle) {
 
+  val inputPath: String = FileUtils.getPuzzleInputPath(day)
   val testInputPath: String = FileUtils.getPuzzleTestInputPath(day)
   val testInputPathPart1: String = FileUtils.getPuzzleTestInputPath(day, Some(1))
   val testInputPathPart1Sub1: String = FileUtils.getPuzzleTestInputPath(day, Some(1), Some(1))
   val testInputPathPart1Sub2: String = FileUtils.getPuzzleTestInputPath(day, Some(1), Some(2))
   val testInputPathPart2: String = FileUtils.getPuzzleTestInputPath(day, Some(2))
+  val testInputPathPart2Sub1: String = FileUtils.getPuzzleTestInputPath(day, Some(2), Some(1))
+  val testInputPathPart2Sub2: String = FileUtils.getPuzzleTestInputPath(day, Some(2), Some(2))
+  val testInputPathPart2Sub3: String = FileUtils.getPuzzleTestInputPath(day, Some(2), Some(3))
 
   def testPart1Real(expectedValue: String): Unit = {
     testPartReal(expectedValue, 1)

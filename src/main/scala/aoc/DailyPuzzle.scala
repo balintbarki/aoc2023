@@ -2,9 +2,11 @@ package aoc
 
 import aoc.utils.FileUtils
 
-abstract class DailyPuzzle(val day: Int, val name: String) {
+import java.nio.file.Path
 
-  val inputPath: String = FileUtils.getPuzzleInputPath(day)
+abstract class DailyPuzzle(val year: Int, val day: Int, val name: String) {
+
+  val inputPath: Path = FileUtils.getPuzzleInputPath(year, day)
 
   def calculatePart1(lines: Seq[String]): String
 

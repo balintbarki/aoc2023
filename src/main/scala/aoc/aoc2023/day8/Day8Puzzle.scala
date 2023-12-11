@@ -1,10 +1,10 @@
 package aoc.aoc2023.day8
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
 import scala.annotation.tailrec
 
-case object Day8Puzzle extends DailyPuzzle(8, "Haunted Wasteland") {
+case object Day8Puzzle extends DailyPuzzle2023(8, "Haunted Wasteland") {
   override def calculatePart1(
     lines: Seq[String]): String = {
     val (steps, desertMap) = getInput(lines)

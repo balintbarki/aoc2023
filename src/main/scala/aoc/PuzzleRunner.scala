@@ -1,14 +1,15 @@
 package aoc
 
 import aoc.aoc2023.PuzzleCollection2023
-import aoc.utils.FileUtils
 
+import java.nio.file.{Files, Path}
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 import scala.util.{Failure, Success, Try}
 
 
 object PuzzleRunner extends App {
 
-  private val notImplementedPuzzle: DailyPuzzle = new DailyPuzzle(0, "Not implemented") {
+  private val notImplementedPuzzle: DailyPuzzle = new DailyPuzzle(0, 0, "Not implemented") {
     override def calculatePart1(
       lines: Seq[String]): String = "This puzzle is not implemented"
 
@@ -19,8 +20,8 @@ object PuzzleRunner extends App {
     PuzzleCollection2023,
   )
 
-  def runPuzzlePart(puzzle: DailyPuzzle, part: Int, inputFileName: String): (String, Long) = {
-    val lines = FileUtils.fileToLines(inputFileName)
+  def runPuzzlePart(puzzle: DailyPuzzle, part: Int, inputFilePath: Path): (String, Long) = {
+    val lines = Files.readAllLines(inputFilePath).asScala.toSeq
     val startTime = System.currentTimeMillis()
 
     val result = Try({

@@ -1,11 +1,10 @@
 package aoc.aoc2023.day11
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
 import scala.math.abs
 
-case object Day11Puzzle extends DailyPuzzle(11, "Cosmic Expansion") {
-
+case object Day11Puzzle extends DailyPuzzle2023(11, "Cosmic Expansion") {
 
   override def calculatePart1(
     lines: Seq[String]): String = calculateDistanceSumInExpandedUniverse(lines, 2)

@@ -1,8 +1,8 @@
 package aoc.aoc2023.day4
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
-case object Day4Puzzle extends DailyPuzzle(4, "Scratchcards") {
+case object Day4Puzzle extends DailyPuzzle2023(4, "Scratchcards") {
 
   override def calculatePart1(
     lines: Seq[String]): String = getCardData(lines).map(data => math.pow(2, data.winningCnt - 1).floor.toInt).sum

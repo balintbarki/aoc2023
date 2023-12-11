@@ -1,10 +1,10 @@
 package aoc.aoc2023.day3
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
 import scala.util.matching.Regex
 
-case object Day3Puzzle extends DailyPuzzle(3, "Gear Ratios") {
+case object Day3Puzzle extends DailyPuzzle2023(3, "Gear Ratios") {
   private val symbolRegex: Regex = """[/*&+$\-%=@#]""".r
 
   override def calculatePart1(

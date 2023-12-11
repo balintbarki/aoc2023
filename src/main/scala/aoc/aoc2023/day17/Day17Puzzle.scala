@@ -1,8 +1,8 @@
 package aoc.aoc2023.day17
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
-case object Day17Puzzle extends DailyPuzzle(17, "unknown") {
+case object Day17Puzzle extends DailyPuzzle2023(17, "unknown") {
   override def calculatePart1(
     lines: Seq[String]): String = ???
 

@@ -1,8 +1,8 @@
 package aoc.aoc2023.day6
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
-case object Day6Puzzle extends DailyPuzzle(6, "Wait For It") {
+case object Day6Puzzle extends DailyPuzzle2023(6, "Wait For It") {
   override def calculatePart2(
     lines: Seq[String]): String = calculatePart1(lines.map(line => line.replaceAll("\\s", "")))
 

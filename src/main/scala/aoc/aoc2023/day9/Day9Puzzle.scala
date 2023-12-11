@@ -1,8 +1,8 @@
 package aoc.aoc2023.day9
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
-case object Day9Puzzle extends DailyPuzzle(9, "Mirage Maintenance") {
+case object Day9Puzzle extends DailyPuzzle2023(9, "Mirage Maintenance") {
   override def calculatePart1(
     lines: Seq[String]): String = getInput(lines).map(extrapolateLast).sum.toString
 

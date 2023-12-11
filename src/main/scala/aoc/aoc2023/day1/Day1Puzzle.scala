@@ -1,9 +1,9 @@
 package aoc.aoc2023.day1
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
 
-case object Day1Puzzle extends DailyPuzzle(1, "Trebuchet?!") {
+case object Day1Puzzle extends DailyPuzzle2023(1, "Trebuchet?!") {
   private val replaceRegexDigitsAsStr = "one|two|three|four|five|six|seven|eight|nine"
   private val replaceRegex = s"$replaceRegexDigitsAsStr|[0-9]"
   private val replaceRegexReversed = s"${replaceRegexDigitsAsStr.reverse}|[0-9]"

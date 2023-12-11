@@ -1,9 +1,9 @@
 package aoc.aoc2023.day2
 
-import aoc.DailyPuzzle
+import aoc.aoc2023.DailyPuzzle2023
 
 
-case object Day2Puzzle extends DailyPuzzle(2, "Cube Conundrum") {
+case object Day2Puzzle extends DailyPuzzle2023(2, "Cube Conundrum") {
   private val maxRed = 12
   private val maxGreen = 13
   private val maxBlue = 14

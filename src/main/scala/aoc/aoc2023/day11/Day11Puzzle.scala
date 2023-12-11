@@ -4,7 +4,7 @@ import aoc.DailyPuzzle
 
 import scala.math.abs
 
-case object Day11Puzzle extends DailyPuzzle(11, "unknown") {
+case object Day11Puzzle extends DailyPuzzle(11, "Cosmic Expansion") {
 
 
   override def calculatePart1(

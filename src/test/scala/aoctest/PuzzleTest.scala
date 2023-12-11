@@ -1,7 +1,6 @@
 package aoctest
 
-import aoc.DailyPuzzle
-import aoc.aoc2023.PuzzleRunner
+import aoc.{DailyPuzzle, PuzzleRunner}
 import aoc.utils.FileUtils
 import org.junit.Assert
 

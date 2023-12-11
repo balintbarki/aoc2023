@@ -1,5 +1,6 @@
 package aoc
 
+import aoc.aoc2015.PuzzleCollection2015
 import aoc.aoc2023.PuzzleCollection2023
 
 import java.nio.file.{Files, Path}
@@ -17,6 +18,7 @@ object PuzzleRunner extends App {
       lines: Seq[String]): String = "This puzzle is not implemented"
   }
   private val puzzleCollections: Seq[PuzzleCollection] = Seq(
+    PuzzleCollection2015,
     PuzzleCollection2023,
   )
 

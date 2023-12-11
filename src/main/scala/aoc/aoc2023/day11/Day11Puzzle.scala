@@ -5,64 +5,48 @@ import aoc.DailyPuzzle
 import scala.math.abs
 
 case object Day11Puzzle extends DailyPuzzle(11, "unknown") {
+
+
   override def calculatePart1(
-    lines: Seq[String]): String = {
-    val expandedUniverse = expandUniverse(lines, 1)
-    println(expandedUniverse)
-
-    val galaxies: Seq[(Int, Int)] = for {
-      x <- expandedUniverse.head.indices
-      y <- expandedUniverse.indices
-      if expandedUniverse(y)(x) == '#'
-    } yield (x, y)
-
-    val distances = for {
-      (first, firstIdx) <- galaxies.zipWithIndex
-      (second, secondIdx) <- galaxies.zipWithIndex
-      if firstIdx < secondIdx
-    } yield abs(first._1 - second._1) + abs(first._2 - second._2)
-
-    distances.sum.toString
-  }
+    lines: Seq[String]): String = calculateDistanceSumInExpandedUniverse(lines, 2)
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): String = calculateDistanceSumInExpandedUniverse(lines, 1000000)
 
-    val expandedUniverse = expandUniverse(lines, 1)
-    println(expandedUniverse)
+  private def calculateDistanceSumInExpandedUniverse(lines: Seq[String], times: Long) = {
 
-    val galaxies: Seq[(Int, Int)] = for {
-      x <- expandedUniverse.head.indices
-      y <- expandedUniverse.indices
-      if expandedUniverse(y)(x) == '#'
-    } yield (x, y)
+    val expandedGalaxies = expandUniverse(lines, times)
 
-    val distances = for {
-      (first, firstIdx) <- galaxies.zipWithIndex
-      (second, secondIdx) <- galaxies.zipWithIndex
-      if firstIdx < secondIdx
-    } yield abs(first._1 - second._1) + abs(first._2 - second._2)
+    {
+      for {
+        (first, firstIdx) <- expandedGalaxies.zipWithIndex
+        (second, secondIdx) <- expandedGalaxies.zipWithIndex
+        if firstIdx < secondIdx
+      } yield abs(first._1 - second._1) + abs(first._2 - second._2)
+    }.sum.toString
 
-    distances.sum.toString
   }
 
+  private def expandUniverse(lines: Seq[String], times: Long): Seq[(Long, Long)] = {
 
-  private def expandUniverse(lines: Seq[String], times: Int): Seq[String] = {
-    val expandedLines = lines.flatMap { line => {
-      Seq(Some(line)) ++ {
-        if (line.forall(_ == '.')) Seq.fill(times)(Some(line)) else Seq()
+    val columnIndices = lines.head.indices
+    val rowIndices = lines.indices
+
+    val rowsToExpand = rowIndices.filter(lines(_).forall(_ == '.'))
+    val columnsToExpand = columnIndices.filter(colIdx => columnIndices.forall(rowIdx => lines(rowIdx)(colIdx) == '.'))
+
+    val galaxies = rowIndices
+      .flatMap(
+        rowIdx => columnIndices.flatMap(colIdx => if (lines(rowIdx)(colIdx) == '#') Some((colIdx, rowIdx)) else None))
+
+    val expandedGalaxies = galaxies
+      .map { case (colIdx, rowIdx) =>
+        val newColIdx = colIdx + columnsToExpand.count(_ < colIdx) * (times - 1)
+        val newRowIdx = rowIdx + rowsToExpand.count(_ < rowIdx) * (times - 1)
+
+        (newColIdx, newRowIdx)
       }
-    }.flatten
-    }
 
-    val columnsToExpand = expandedLines.head.indices.filter(index => expandedLines.map(_(index)).forall(_ == '.'))
-
-    expandedLines.map { line =>
-      line.indices.flatMap(index =>
-        Seq(Some(line(index))) ++ {
-          if (columnsToExpand.contains(index)) Seq.fill(times)(Some(line(index))) else Seq()
-        }
-      ).flatten.mkString
-    }
+    expandedGalaxies
   }
 }

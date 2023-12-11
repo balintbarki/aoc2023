@@ -3,6 +3,7 @@ package aoc.aoc2023
 import aoc.DailyPuzzle
 import aoc.aoc2023.day1.Day1Puzzle
 import aoc.aoc2023.day10.Day10Puzzle
+import aoc.aoc2023.day11.Day11Puzzle
 import aoc.aoc2023.day2.Day2Puzzle
 import aoc.aoc2023.day3.Day3Puzzle
 import aoc.aoc2023.day4.Day4Puzzle
@@ -34,7 +35,8 @@ object PuzzleRunner extends App {
     Day7Puzzle,
     Day8Puzzle,
     Day9Puzzle,
-    Day10Puzzle
+    Day10Puzzle,
+    Day11Puzzle
   )
 
   def runPuzzlePart(puzzle: DailyPuzzle, part: Int, inputFileName: String): (String, Long) = {
@@ -63,7 +65,7 @@ object PuzzleRunner extends App {
     val inputFileName = puzzle.inputPath
 
     println(s"Results of Day $day - ${puzzle.name}:")
-    
+
     val (part1Result, part1Time) = runPuzzlePart(puzzle, 1, inputFileName)
     val (part2Result, part2Time) = runPuzzlePart(puzzle, 2, inputFileName)
 

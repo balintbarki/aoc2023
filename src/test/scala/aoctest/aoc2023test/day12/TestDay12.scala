@@ -2,19 +2,19 @@ package aoctest.aoc2023test.day12
 
 import aoc.aoc2023.day12.Day12Puzzle
 import aoctest.PuzzleTest
-import org.junit.{Ignore, Test}
+import org.junit.{Assert, Ignore, Test}
 
 @Ignore
 class TestDay12 extends PuzzleTest(Day12Puzzle) {
 
   @Test
   def testDay12Part1(): Unit = {
-    testPart1("0")
+    testPart1("21")
   }
 
   @Test
   def testDay12Part1real(): Unit = {
-    testPart1Real("0")
+    testPart1Real("7694")
   }
 
   @Test

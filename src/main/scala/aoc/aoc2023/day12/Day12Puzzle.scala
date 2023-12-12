@@ -19,15 +19,18 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "unknown") {
   private def getReducedInputs(lines: Seq[String], unfoldCnt: Int) =
     lines.map(line => {
       val parts = line.split(" ")
-      (Seq.fill(unfoldCnt)(parts.head.trim).mkString("?")
+      val originalRecord = Seq.fill(unfoldCnt)(parts.head.trim).mkString("?")
+      val originalGroups = Seq.fill(unfoldCnt)(parts.last).mkString(",")
+        .trim.split(",")
+        .map(_.toInt).toSeq
+
+      (originalRecord, originalRecord
         .replaceAll("\\.+", operationalCode) // replace internal multiple operational springs with one
         .replaceAll(s"^$operationalCode", "") // replace starting operational spring with empty
         .replaceAll(s"$operationalCode$$", "") // replace ending operational spring with empty
         .replaceAll("#", damagedCode)
         .replaceAll("\\?", unknownCode),
-        Seq.fill(unfoldCnt)(parts.last).mkString(",")
-          .trim.split(",")
-          .map(_.toInt).toSeq)
+        originalGroups)
     })
 
   private def calculateUnfolded(lines: Seq[String], unfoldCnt: Int): String = {
@@ -37,9 +40,8 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "unknown") {
     // Generate group strings
     // Determine number of extra operationals
     // Generate all possible combination and check if it matches with reduced input
-    reducedInputs.map { case (record, groups) =>
+    reducedInputs.map { case (originalRecord, record, groups) =>
 
-      println(record)
       val recordPattern = new Regex(record)
       val minLength = groups.sum + groups.length - 1
       val recordLength = record.length
@@ -65,7 +67,11 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "unknown") {
           prev + first + second
         })
 
-      results.count(result => recordPattern.matches(result))
+      val cnt = results.count(result => recordPattern.matches(result))
+
+      println(s"Record: $originalRecord, groups: $groups, cnt: $cnt")
+
+      cnt
 
     }.sum.toString
   }

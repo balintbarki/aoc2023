@@ -6,7 +6,6 @@ import org.junit.{Assert, Ignore, Test}
 
 import java.nio.file.Paths
 
-@Ignore
 class TestDay12 extends PuzzleTest(Day12Puzzle) {
 
   @Test
@@ -24,11 +23,13 @@ class TestDay12 extends PuzzleTest(Day12Puzzle) {
     testPart1Real("7694")
   }
 
+  @Ignore
   @Test
   def testDay12Part2(): Unit = {
     testPart2("525152")
   }
 
+  @Ignore
   @Test
   def testDay12Part2real(): Unit = {
     testPart2Real("0")

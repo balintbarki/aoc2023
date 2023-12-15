@@ -25,22 +25,20 @@ case object Day14Puzzle extends DailyPuzzle2023(14, "unknown") {
     // Map containing "cached" results:
     // - Matrix hashcode
     // - Number of times it appeared
-    // - Load on north support beams
     // - Last cycle resulting this matrix
     // - Difference between the last two cycles
-    var cycleMap = Map[Int, (Int, Int, Long, Long)]()
+    var cycleMap = Map[Int, (Int, Long, Long)]()
 
     while (cycle < times) {
       result = tiltEast(tiltSouth(tiltWest(tiltNorth(result))))
       cycle = cycle + 1
-      val load: Int = calculateNorthBeamLoad(result)
       val hash: Int = result.hashCode()
-      val (_, appearCntOfThis, lastCycleOfThis, _) = cycleMap.getOrElse(hash, (0, 0, 0L, 0L))
+      val (appearCntOfThis, lastCycleOfThis, _) = cycleMap.getOrElse(hash, (0, 0L, 0L))
       val cycleDiffOfThis: Long = cycle - lastCycleOfThis
-      cycleMap = cycleMap + (hash -> (load, appearCntOfThis + 1, cycle, cycleDiffOfThis))
+      cycleMap = cycleMap + (hash -> (appearCntOfThis + 1, cycle, cycleDiffOfThis))
 
-      if ((3 <= appearCntOfThis) && cycleMap.filter { case (_, (_, _, lastCycle, _)) => lastCycle >= lastCycleOfThis }
-        .forall { case (_, (_, _, _, cycleDiff)) => cycleDiff == cycleDiffOfThis }) {
+      if ((3 <= appearCntOfThis) && cycleMap.filter { case (_, (_, lastCycle, _)) => lastCycle >= lastCycleOfThis }
+        .forall { case (_, (_, _, cycleDiff)) => cycleDiff == cycleDiffOfThis }) {
 
         val remainingCycles = (times - cycle) % cycleDiffOfThis
         cycle = times - remainingCycles

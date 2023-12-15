@@ -5,6 +5,7 @@ import aoc.aoc2023.day1.Day1Puzzle
 import aoc.aoc2023.day10.Day10Puzzle
 import aoc.aoc2023.day11.Day11Puzzle
 import aoc.aoc2023.day12.Day12Puzzle
+import aoc.aoc2023.day13.Day13Puzzle
 import aoc.aoc2023.day2.Day2Puzzle
 import aoc.aoc2023.day3.Day3Puzzle
 import aoc.aoc2023.day4.Day4Puzzle
@@ -27,6 +28,7 @@ object PuzzleCollection2023 extends PuzzleCollection(2023) {
     Day9Puzzle,
     Day10Puzzle,
     Day11Puzzle,
-    Day12Puzzle
+    Day12Puzzle,
+    Day13Puzzle
   )
 }

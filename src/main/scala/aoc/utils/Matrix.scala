@@ -25,14 +25,6 @@ class Matrix[T](val elements: List[List[T]]) {
     }
   }
 
-  def rowHashes: List[Int] = {
-    elements.map(_.hashCode())
-  }
-
-  def columnHashes: List[Int] = {
-    this.transpose.rowHashes
-  }
-
   /** Calculates the inequality matrix of two matrices
    *
    * The inequality matrix contains 1 where the two matrices differ and 0 where they are equal.

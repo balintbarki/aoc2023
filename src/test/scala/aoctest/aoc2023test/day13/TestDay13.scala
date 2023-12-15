@@ -27,7 +27,7 @@ class TestDay13 extends PuzzleTest(Day13Puzzle) {
   @Ignore
   @Test
   def testDay13Part2(): Unit = {
-    testPart2("0")
+    testPart2("400")
   }
 
   @Ignore

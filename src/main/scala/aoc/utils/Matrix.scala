@@ -11,6 +11,8 @@ class Matrix[T](val elements: List[List[T]]) {
     case _                 => false
   }
 
+  override def hashCode(): Int = elements.map(_.hashCode()).hashCode()
+
   def rows: List[List[T]] = elements
 
   def columns: List[List[T]] = this.transpose.rows
@@ -55,6 +57,10 @@ class Matrix[T](val elements: List[List[T]]) {
   }
 
   def mirrorAtColumn(column: Int): Matrix[T] = transpose.mirrorAtRow(column).transpose
+
+  def print(): Unit = {
+    rows.foreach(row => println(row.mkString))
+  }
 
 }
 

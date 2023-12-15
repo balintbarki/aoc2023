@@ -6,11 +6,7 @@ import scala.collection.mutable
 
 case object Day15Puzzle extends DailyPuzzle2023(15, "Lens Library") {
 
-  def hash(s: String): Int = s.foldLeft(0)((acc, c) => ((acc + c.toInt) * 17) % 256)
-
-  override def calculatePart1(lines: Seq[String]): String = {
-    lines.head.split(",").map(hash).sum.toString
-  }
+  override def calculatePart1(lines: Seq[String]): String = lines.head.split(",").map(hash).sum.toString
 
   override def calculatePart2(lines: Seq[String]): String = {
 
@@ -24,10 +20,11 @@ case object Day15Puzzle extends DailyPuzzle2023(15, "Lens Library") {
     }
 
     boxes.map(box => box.lensSlots.zipWithIndex.map { case ((_, focus), index) =>
-      val value = (box.id + 1) * (index + 1) * focus
-      value
+      (box.id + 1) * (index + 1) * focus
     }.sum).sum.toString
   }
+
+  private def hash(s: String): Int = s.foldLeft(0)((acc, c) => ((acc + c.toInt) * 17) % 256)
 
   private case class Box(id: Int) {
     val lensSlots: mutable.LinkedHashMap[String, Int] = mutable.LinkedHashMap()

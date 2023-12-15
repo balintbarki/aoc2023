@@ -4,7 +4,7 @@ import aoc.aoc2023.DailyPuzzle2023
 import aoc.utils.ImplicitUtils.AddMultispanToList
 import aoc.utils.Matrix
 
-case object Day14Puzzle extends DailyPuzzle2023(14, "unknown") {
+case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") {
 
   override def calculatePart1(lines: Seq[String]): String = {
 

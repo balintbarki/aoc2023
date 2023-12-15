@@ -1,12 +1,9 @@
 package aoc.aoc2023.day13
 
 import aoc.aoc2023.DailyPuzzle2023
-
-import scala.math.Ordered.orderingToOrdered
+import aoc.utils.ImplicitUtils._
 
 case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
-
-  import aoc.utils.ImplicitUtils._
 
   override def calculatePart1(
     lines: Seq[String]): String = {

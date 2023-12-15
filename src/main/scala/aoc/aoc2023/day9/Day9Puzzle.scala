@@ -1,22 +1,14 @@
 package aoc.aoc2023.day9
 
 import aoc.aoc2023.DailyPuzzle2023
+import aoc.utils.Parsing
 
 case object Day9Puzzle extends DailyPuzzle2023(9, "Mirage Maintenance") {
   override def calculatePart1(
-    lines: Seq[String]): String = getInput(lines).map(extrapolateLast).sum.toString
+    lines: Seq[String]): String = lines.map(Parsing.stringToNumbers).map(extrapolateLast).sum.toString
 
   override def calculatePart2(
-    lines: Seq[String]): String = getInput(lines).map(extrapolateFirst).sum.toString
-
-  private def getInput(lines: Seq[String]): Seq[Seq[Long]] = {
-    val numberRegex = """(-?\d+)""".r
-
-    lines.map { line => {
-      numberRegex.findAllIn(line).matchData.map(_.matched.toLong).toSeq
-    }
-    }
-  }
+    lines: Seq[String]): String = lines.map(Parsing.stringToNumbers).map(extrapolateFirst).sum.toString
 
   private def extrapolateLast(input: Seq[Long]): Long = {
 

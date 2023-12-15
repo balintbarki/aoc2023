@@ -11,7 +11,7 @@ case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
   override def calculatePart1(
     lines: Seq[String]): String = {
 
-    val inputs = getInput(lines).map(_.filter(_.nonEmpty))
+    val inputs = lines.toList.multiSpanWithoutDelimiter(_.isEmpty)
 
     inputs.map { input =>
       val rowHashes = input.map(_.hashCode()).zipWithIndex
@@ -20,10 +20,9 @@ case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
       val rowReflectionIndex = findReflection(rowHashes)
       val columnReflectionIndex = findReflection(columnHashes)
       val result = columnReflectionIndex + 100 * rowReflectionIndex
-      //println(s"rowReflectionIndex: $rowReflectionIndex, columnReflectionIndex: $columnReflectionIndex")
       if (result == 0) {
         input.foreach(println)
-        ???
+        throw new RuntimeException("Result should never be 0")
       }
       result
     }.sum.toString
@@ -49,7 +48,7 @@ case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
   }
 
   private def getInput(lines: Seq[String]) = {
-    lines.toList.multiSpan(_.isEmpty)
+    lines.toList.multiSpanWithoutDelimiter(_.isEmpty)
   }
 
 }

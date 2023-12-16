@@ -19,9 +19,9 @@ case object Day15Puzzle extends DailyPuzzle2023(15, "Lens Library") {
       case insertRegex(label, focus) => boxes(hash(label)).lensSlots.update(label, focus.toInt)
     }
 
-    boxes.map(box => box.lensSlots.zipWithIndex.map { case ((_, focus), index) =>
-      (box.id + 1) * (index + 1) * focus
-    }.sum).sum.toString
+    boxes
+      .map(box => box.lensSlots.zipWithIndex.map { case ((_, focus), index) => (box.id + 1) * (index + 1) * focus }.sum)
+      .sum.toString
   }
 
   private def hash(s: String): Int = s.foldLeft(0)((acc, c) => ((acc + c.toInt) * 17) % 256)

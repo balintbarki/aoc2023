@@ -47,7 +47,6 @@ object FolderStructureGenerator extends App {
       Files.write(testInputPath, "".getBytes)
     }
     )
-
   }
 
   private def yearSpecificDailyPuzzleClassTemplateContent(year: Int): String =
@@ -65,11 +64,9 @@ object FolderStructureGenerator extends App {
        |import aoc.aoc${year}.DailyPuzzle$year
        |
        |case object Day${day}Puzzle extends DailyPuzzle$year($day, "unknown") {
-       |  override def calculatePart1(
-       |    lines: Seq[String]): String = ???
+       |  override def calculatePart1(lines: Seq[String]): String = ???
        |
-       |  override def calculatePart2(
-       |    lines: Seq[String]): String = ???
+       |  override def calculatePart2(lines: Seq[String]): String = ???
        |
        |}
        |

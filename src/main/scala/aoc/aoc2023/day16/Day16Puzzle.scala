@@ -7,21 +7,40 @@ import scala.collection.mutable
 
 case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
 
-  override def calculatePart1(lines: Seq[String]): String = {
-    val grid = Matrix.fromStrings(lines.toList)
+  def calculate(grid: Matrix[Char], x: Int, y: Int, from: Direction): Int = {
     val tiles: Matrix[Tile] = grid.map(c => Tile(c))
 
     val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
 
-    jobQueue.enqueue(() => runLight(0, 0, Left, tiles, grid.rows.length, grid.columns.length, jobQueue))
+    jobQueue.enqueue(() => runLight(x, y, from, tiles, grid.rows.length, grid.columns.length, jobQueue))
     while (jobQueue.nonEmpty) {
       jobQueue.dequeue()()
     }
 
-    tiles.count(_.hasLight).toString
+    tiles.count(_.hasLight)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart1(lines: Seq[String]): String = {
+    val grid = Matrix.fromStrings(lines.toList)
+
+    calculate(grid, 0, 0, Left).toString
+  }
+
+  override def calculatePart2(lines: Seq[String]): String = {
+    val grid = Matrix.fromStrings(lines.toList)
+
+    val startPositions =
+      grid.rows.indices.map(rowIdx => (0, rowIdx, Left)) ++
+        grid.rows.indices.map(rowIdx => (grid.columns.length - 1, rowIdx, Right)) ++
+        grid.columns.indices.map(colIdx => (colIdx, 0, Up)) ++
+        grid.columns.indices.map(colIdx => (colIdx, grid.rows.length - 1, Down))
+
+    val values = startPositions.map {
+      case (x, y, dir) => calculate(grid, x, y, dir)
+    }
+
+    values.max.toString
+  }
 
   private def runLight(
     x: Int, y: Int, from: Direction, tiles: Matrix[Tile], height: Int, width: Int,

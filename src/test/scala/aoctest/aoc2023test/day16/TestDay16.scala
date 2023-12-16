@@ -4,7 +4,7 @@ import aoc.aoc2023.day16.Day16Puzzle
 import aoctest.PuzzleTest
 import org.junit.{Ignore, Test}
 
-@Ignore
+
 class TestDay16 extends PuzzleTest(Day16Puzzle) {
 
   @Test
@@ -19,11 +19,11 @@ class TestDay16 extends PuzzleTest(Day16Puzzle) {
 
   @Test
   def testDay16Part2(): Unit = {
-    testPart2("0")
+    testPart2("51")
   }
 
   @Test
   def testDay16Part2real(): Unit = {
-    testPart2Real("0")
+    testPart2Real("7530")
   }
 }

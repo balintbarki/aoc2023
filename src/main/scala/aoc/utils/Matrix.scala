@@ -17,6 +17,13 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def columns: List[List[T]] = this.transpose.rows
 
+  def get(x: Int, y: Int): T = elements(y)(x)
+
+  def map[B](f: T => B): Matrix[B] = Matrix(
+    elements.indices.map(row => elements.head.indices.map(column => f(elements(row)(column))).toList).toList)
+
+  def count(p: T => Boolean): Int = elements.map(row => row.count(p)).sum
+
   def transpose: Matrix[T] = {
     if (elements.isEmpty || elements.forall(_.isEmpty))
       this

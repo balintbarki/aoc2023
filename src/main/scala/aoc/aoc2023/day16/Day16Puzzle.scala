@@ -1,7 +1,7 @@
 package aoc.aoc2023.day16
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.Matrix
+import aoc.utils.{Direction, Matrix}
 
 import scala.collection.mutable
 
@@ -21,19 +21,19 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
   }
 
   override def calculatePart1(lines: Seq[String]): String = {
-    val grid = Matrix.fromStrings(lines.toList)
+    val grid = Matrix.fromStrings(lines)
 
-    calculate(grid, 0, 0, Left).toString
+    calculate(grid, 0, 0, Direction.Left).toString
   }
 
   override def calculatePart2(lines: Seq[String]): String = {
-    val grid = Matrix.fromStrings(lines.toList)
+    val grid = Matrix.fromStrings(lines)
 
     val startPositions =
-      grid.rows.indices.map(rowIdx => (0, rowIdx, Left)) ++
-        grid.rows.indices.map(rowIdx => (grid.columns.length - 1, rowIdx, Right)) ++
-        grid.columns.indices.map(colIdx => (colIdx, 0, Up)) ++
-        grid.columns.indices.map(colIdx => (colIdx, grid.rows.length - 1, Down))
+      grid.rows.indices.map(rowIdx => (0, rowIdx, Direction.Left)) ++
+        grid.rows.indices.map(rowIdx => (grid.columns.length - 1, rowIdx, Direction.Right)) ++
+        grid.columns.indices.map(colIdx => (colIdx, 0, Direction.Up)) ++
+        grid.columns.indices.map(colIdx => (colIdx, grid.rows.length - 1, Direction.Down))
 
     val values = startPositions.map {
       case (x, y, dir) => calculate(grid, x, y, dir)
@@ -48,25 +48,25 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
 
     val tile = tiles.get(x, y)
 
-    def nextTileIsToUp(x: Int, y: Int): (Int, Int, Direction) = (x, y - 1, Down)
+    def nextTileIsToUp(x: Int, y: Int): (Int, Int, Direction) = (x, y - 1, Direction.Down)
 
-    def nextTileIsToDown(x: Int, y: Int): (Int, Int, Direction) = (x, y + 1, Up)
+    def nextTileIsToDown(x: Int, y: Int): (Int, Int, Direction) = (x, y + 1, Direction.Up)
 
-    def nextTileIsToLeft(x: Int, y: Int): (Int, Int, Direction) = (x - 1, y, Right)
+    def nextTileIsToLeft(x: Int, y: Int): (Int, Int, Direction) = (x - 1, y, Direction.Right)
 
-    def nextTileIsToRight(x: Int, y: Int): (Int, Int, Direction) = (x + 1, y, Left)
+    def nextTileIsToRight(x: Int, y: Int): (Int, Int, Direction) = (x + 1, y, Direction.Left)
 
     (from, tile) match {
-      case (Left, t) if t.hasLeft   =>
-      case (Right, t) if t.hasRight =>
-      case (Up, t) if t.hasUp       =>
-      case (Down, t) if t.hasDown   =>
-      case _                        =>
+      case (Direction.Left, t) if t.hasLeft   =>
+      case (Direction.Right, t) if t.hasRight =>
+      case (Direction.Up, t) if t.hasUp       =>
+      case (Direction.Down, t) if t.hasDown   =>
+      case _                                  =>
         val nextDirections: Seq[(Int, Int, Direction)] = tile.processLight(from).map {
-          case Up    => nextTileIsToUp(x, y)
-          case Down  => nextTileIsToDown(x, y)
-          case Left  => nextTileIsToLeft(x, y)
-          case Right => nextTileIsToRight(x, y)
+          case Direction.Up    => nextTileIsToUp(x, y)
+          case Direction.Down  => nextTileIsToDown(x, y)
+          case Direction.Left  => nextTileIsToLeft(x, y)
+          case Direction.Right => nextTileIsToRight(x, y)
         }
 
         nextDirections.foreach { case (nextX, nextY, nextFrom) =>
@@ -75,8 +75,6 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
         }
     }
   }
-
-  private sealed trait Direction
 
   private abstract class Tile {
     var hasLeft: Boolean = false
@@ -100,25 +98,25 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     def symbol: Char = Tile.emptySymbol
 
     override def processLight(from: Direction): Seq[Direction] = from match {
-      case Left =>
+      case Direction.Left =>
         this.hasLeft = true
         this.hasRight = true
-        Seq(Right)
+        Seq(Direction.Right)
 
-      case Right =>
+      case Direction.Right =>
         this.hasLeft = true
         this.hasRight = true
-        Seq(Left)
+        Seq(Direction.Left)
 
-      case Up =>
+      case Direction.Up =>
         this.hasUp = true
         this.hasDown = true
-        Seq(Down)
+        Seq(Direction.Down)
 
-      case Down =>
+      case Direction.Down =>
         this.hasUp = true
         this.hasDown = true
-        Seq(Up)
+        Seq(Direction.Up)
     }
   }
 
@@ -127,25 +125,25 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     def symbol: Char = Tile.leftToUpSymbol
 
     override def processLight(from: Direction): Seq[Direction] = from match {
-      case Left =>
+      case Direction.Left =>
         this.hasLeft = true
         this.hasUp = true
-        Seq(Up)
+        Seq(Direction.Up)
 
-      case Right =>
+      case Direction.Right =>
         this.hasRight = true
         this.hasDown = true
-        Seq(Down)
+        Seq(Direction.Down)
 
-      case Up =>
+      case Direction.Up =>
         this.hasUp = true
         this.hasLeft = true
-        Seq(Left)
+        Seq(Direction.Left)
 
-      case Down =>
+      case Direction.Down =>
         this.hasRight = true
         this.hasDown = true
-        Seq(Right)
+        Seq(Direction.Right)
     }
   }
 
@@ -154,25 +152,25 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     def symbol: Char = Tile.leftToDownSymbol
 
     override def processLight(from: Direction): Seq[Direction] = from match {
-      case Left =>
+      case Direction.Left =>
         this.hasLeft = true
         this.hasDown = true
-        Seq(Down)
+        Seq(Direction.Down)
 
-      case Right =>
+      case Direction.Right =>
         this.hasRight = true
         this.hasUp = true
-        Seq(Up)
+        Seq(Direction.Up)
 
-      case Up =>
+      case Direction.Up =>
         this.hasRight = true
         this.hasUp = true
-        Seq(Right)
+        Seq(Direction.Right)
 
-      case Down =>
+      case Direction.Down =>
         this.hasLeft = true
         this.hasDown = true
-        Seq(Left)
+        Seq(Direction.Left)
     }
   }
 
@@ -181,27 +179,27 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     def symbol: Char = Tile.horizontalSymbol
 
     override def processLight(from: Direction): Seq[Direction] = from match {
-      case Left =>
+      case Direction.Left =>
         this.hasLeft = true
         this.hasRight = true
-        Seq(Right)
+        Seq(Direction.Right)
 
-      case Right =>
+      case Direction.Right =>
         this.hasLeft = true
         this.hasRight = true
-        Seq(Left)
+        Seq(Direction.Left)
 
-      case Up =>
+      case Direction.Up =>
         this.hasUp = true
         this.hasLeft = true
         this.hasRight = true
-        Seq(Left, Right)
+        Seq(Direction.Left, Direction.Right)
 
-      case Down =>
+      case Direction.Down =>
         this.hasDown = true
         this.hasLeft = true
         this.hasRight = true
-        Seq(Left, Right)
+        Seq(Direction.Left, Direction.Right)
     }
   }
 
@@ -210,27 +208,27 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     def symbol: Char = Tile.verticalSymbol
 
     override def processLight(from: Direction): Seq[Direction] = from match {
-      case Left =>
+      case Direction.Left =>
         this.hasLeft = true
         this.hasUp = true
         this.hasDown = true
-        Seq(Up, Down)
+        Seq(Direction.Up, Direction.Down)
 
-      case Right =>
+      case Direction.Right =>
         this.hasRight = true
         this.hasUp = true
         this.hasDown = true
-        Seq(Up, Down)
+        Seq(Direction.Up, Direction.Down)
 
-      case Up =>
+      case Direction.Up =>
         this.hasUp = true
         this.hasDown = true
-        Seq(Down)
+        Seq(Direction.Down)
 
-      case Down =>
+      case Direction.Down =>
         this.hasUp = true
         this.hasDown = true
-        Seq(Up)
+        Seq(Direction.Up)
     }
   }
 
@@ -251,14 +249,4 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
       case _    => ???
     }
   }
-
-  private case object Up extends Direction
-
-  private case object Down extends Direction
-
-  private case object Left extends Direction
-
-  private case object Right extends Direction
-
-
 }

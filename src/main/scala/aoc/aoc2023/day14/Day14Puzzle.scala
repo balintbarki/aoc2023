@@ -8,13 +8,13 @@ case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") 
 
   override def calculatePart1(lines: Seq[String]): String = {
 
-    val result = tiltNorth(Matrix.fromStrings(lines.toList))
+    val result = tiltNorth(Matrix.fromStrings(lines))
     calculateNorthBeamLoad(result).toString
   }
 
   override def calculatePart2(lines: Seq[String]): String = {
 
-    val result = runCycle(Matrix.fromStrings(lines.toList), 1000000000)
+    val result = runCycle(Matrix.fromStrings(lines), 1000000000)
     calculateNorthBeamLoad(result).toString
   }
 

@@ -35,7 +35,7 @@ object PuzzleRunner extends App {
         throw new IllegalArgumentException("Unexpected part")
     }) match {
       case Success(value)     => value
-      case Failure(exception) => exception.getMessage
+      case Failure(exception) => exception.printStackTrace(); exception.getMessage
     }
 
     val deltaT = System.currentTimeMillis() - startTime

@@ -6,6 +6,9 @@ class Matrix[T](val elements: List[List[T]]) {
     require(elements.forall(row => row.length == elements.head.length),
       s"Matrix rows shall have equal number of elements. Row lengths: ${elements.map(_.length).mkString(", ")}")
 
+  lazy val xSize = elements.headOption.map(_.length).getOrElse(0)
+  lazy val ySize = elements.length
+
   override def equals(obj: Any): Boolean = obj match {
     case matrix: Matrix[_] => elements == matrix.elements
     case _                 => false
@@ -65,8 +68,8 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def mirrorAtColumn(column: Int): Matrix[T] = transpose.mirrorAtRow(column).transpose
 
-  def print(): Unit = {
-    rows.foreach(row => println(row.mkString))
+  def print(minWidth: Int = 1): Unit = {
+    rows.foreach(row => println(row.map(item => String.format("%" + minWidth + "s", item.toString)).mkString(", ")))
   }
 
 }
@@ -85,6 +88,8 @@ object Matrix {
   def unapply[T](matrix: Matrix[T]): List[List[T]] = matrix.elements
 
   def fromStrings(lines: List[String]): Matrix[Char] = Matrix(lines.map(_.toList))
+
+  def fromStrings(lines: Seq[String]): Matrix[Char] = fromStrings(lines.toList)
 }
 
 object NumericMatrix {

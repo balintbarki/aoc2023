@@ -20,6 +20,15 @@ sealed trait Vertical extends Direction {
 
 object Direction {
 
+  def parse(c: Char): Direction = c.toLower match {
+    case 'r' => Right
+    case 'l' => Left
+    case 'u' => Up
+    case 'd' => Down
+  }
+
+  def parse(s: String): Direction = parse(s.charAt(0))
+
   case object Up extends Vertical {
     override def opposite: Direction = Down
 

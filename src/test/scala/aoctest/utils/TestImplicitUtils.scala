@@ -1,4 +1,4 @@
-package aoctest.test
+package aoctest.utils
 
 import aoc.utils.ImplicitUtils.AddMultispanToList
 import org.junit.{Assert, Test}

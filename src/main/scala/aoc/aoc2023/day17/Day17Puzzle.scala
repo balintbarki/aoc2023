@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
-  val heatLossOfNotVisited = Int.MaxValue
+  val heatLossOfNotVisited: Int = Int.MaxValue
   val maxConsecutiveSteps = 3
 
   def findPath(
@@ -26,7 +26,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
           //println(s"Trying to step $dir to ($newX, $newY)")
 
-          val heatLossFromSource = from.minHeatLossWithStepsLeftTo.getOrElse(dir, ???)._1
+          val heatLossesFromSource = from.minHeatLossesForStepsLeftTo.getOrElse(dir, ???)
 
           val allowedDirectionsWithStepsLeft = dir.getPerpendiculars.map((_, maxConsecutiveSteps)) ++ {
             val stepsAlreadyToDir = lastSteps.count(_ == dir)
@@ -37,18 +37,16 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
           }
 
           val directionsToProceed = allowedDirectionsWithStepsLeft.filter { case (newDir, stepsLeft) =>
-            val (prevHeatLossToDir, prevStepsLeft) = stepTarget.minHeatLossWithStepsLeftTo(newDir)
-            val heatLoss = heatLossFromSource + stepTarget.heatLoss
-            if (heatLoss < prevHeatLossToDir) {
-              stepTarget.minHeatLossWithStepsLeftTo.update(newDir, (heatLoss, stepsLeft))
+            val prevMinHeatLossesForStepsLeftTo = stepTarget.minHeatLossesForStepsLeftTo(newDir)
+            val heatLoss = heatLossesFromSource(stepsLeft - 1) + stepTarget.heatLoss
+
+            prevMinHeatLossesForStepsLeftTo.indices.count { prevMinHeatLoss =>
+              if (heatLoss < prevMinHeatLoss) {
+                val newMinHeatLosses = Seq.fill(stepsLeft)(heatLoss) ++ prevMinHeatLossesForStepsLeftTo.drop(stepsLeft)
+                stepTarget.minHeatLossesForStepsLeftTo.update(newDir, newMinHeatLosses)
+              }
               true
-            }
-            else if ((heatLoss == prevHeatLossToDir) && (stepsLeft > prevStepsLeft)) {
-              stepTarget.minHeatLossWithStepsLeftTo.update(newDir, (heatLoss, stepsLeft))
-              true
-            }
-            else
-              false
+            } != 0
           }
 
           //printBlockMatrix(blockMatrix)
@@ -96,8 +94,10 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
     val targetX = blockMatrix.columns.length - 1
     val targetY = blockMatrix.rows.length - 1
     val startBlock = blockMatrix.get(startX, startY)
-    startBlock.minHeatLossWithStepsLeftTo.update(Direction.Down, (0, maxConsecutiveSteps - 1))
-    startBlock.minHeatLossWithStepsLeftTo.update(Direction.Right, (0, maxConsecutiveSteps - 1))
+    startBlock.minHeatLossesForStepsLeftTo
+      .update(Direction.Down, Seq.fill(maxConsecutiveSteps - 1)(0) ++ Seq(heatLossOfNotVisited))
+    startBlock.minHeatLossesForStepsLeftTo
+      .update(Direction.Right, Seq.fill(maxConsecutiveSteps - 1)(0) ++ Seq(heatLossOfNotVisited))
 
     val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
 
@@ -111,7 +111,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
     //printBlockMatrix(blockMatrix)
 
-    blockMatrix.get(targetX, targetY).minHeatLossWithStepsLeftTo.map { case (_, (value, _)) => value }.min.toString
+    blockMatrix.get(targetX, targetY).minHeatLossesForStepsLeftTo.map { case (_, values) => values.min }.min.toString
   }
 
   override def calculatePart2(lines: Seq[String]): String = ???
@@ -120,7 +120,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
   private def printBlockMatrix(blockMatrix: Matrix[Block]): Unit = {
     blockMatrix
       .map(item => s"${item.heatLoss} (${
-        item.minHeatLossWithStepsLeftTo.map { case (key, value) => s"${key.toString.take(1)}:$value" }.mkString(",")
+        item.minHeatLossesForStepsLeftTo.map { case (key, value) => s"${key.toString.take(1)}:$value" }.mkString(",")
       })")
       .print(20)
     println()
@@ -128,11 +128,11 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
   private class Block(val heatLoss: Int) {
     // Minimum heat loss when going to a direction
-    val minHeatLossWithStepsLeftTo: mutable.Map[Direction, (Int, Int)] = mutable.Map(
-      Direction.Up -> (heatLossOfNotVisited, maxConsecutiveSteps),
-      Direction.Down -> (heatLossOfNotVisited, maxConsecutiveSteps),
-      Direction.Left -> (heatLossOfNotVisited, maxConsecutiveSteps),
-      Direction.Right -> (heatLossOfNotVisited, maxConsecutiveSteps)
+    val minHeatLossesForStepsLeftTo: mutable.Map[Direction, Seq[Int]] = mutable.Map(
+      Direction.Up -> Seq.fill(maxConsecutiveSteps)(heatLossOfNotVisited),
+      Direction.Down -> Seq.fill(maxConsecutiveSteps)(heatLossOfNotVisited),
+      Direction.Left -> Seq.fill(maxConsecutiveSteps)(heatLossOfNotVisited),
+      Direction.Right -> Seq.fill(maxConsecutiveSteps)(heatLossOfNotVisited),
     )
 
 

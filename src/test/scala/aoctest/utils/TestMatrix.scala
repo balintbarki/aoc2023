@@ -1,4 +1,4 @@
-package aoctest.test
+package aoctest.utils
 
 import aoc.utils.{Matrix, NumericMatrix}
 import org.junit.{Assert, Test}

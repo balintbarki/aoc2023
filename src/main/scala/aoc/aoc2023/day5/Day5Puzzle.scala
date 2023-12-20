@@ -1,6 +1,8 @@
 package aoc.aoc2023.day5
 
 import aoc.aoc2023.{DailyPuzzle2023, day5}
+import aoc.utils
+import aoc.utils.Range
 
 import scala.annotation.tailrec
 
@@ -10,7 +12,7 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
 
   override def calculatePart1(
     lines: Seq[String]): String = {
-    def seedParser: String => Seq[Range] = line =>
+    def seedParser: String => Seq[utils.Range] = line =>
       """(\d+)""".r.findAllIn(line).matchData.map(matcher => Range(matcher.matched.toLong)).toSeq
 
     val (seedRanges, propertyMaps) = parseData(lines, seedParser)
@@ -22,12 +24,12 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
 
   override def calculatePart2(lines: Seq[String]): String = {
 
-    def seedParser: String => Seq[Range] = line => {
+    def seedParser: String => Seq[utils.Range] = line => {
       val pairs =
         """(\d+\s+\d+)""".r.findAllIn(line).matchData
           .map(_.matched.split("\\s").toSeq).toSeq
 
-      val result = pairs.foldLeft(Seq[Range]())(
+      val result = pairs.foldLeft(Seq[utils.Range]())(
         (acc, current) => {
           val start = current.head.toLong
           val end = start + current(1).toLong
@@ -44,7 +46,8 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
     rangesToEndpoints(finalRanges).min.toString
   }
 
-  private def parseData(lines: Seq[String], seedParser: String => Seq[Range]): (Seq[Range], Seq[PropertyMap]) = {
+  private def parseData(
+    lines: Seq[String], seedParser: String => Seq[utils.Range]): (Seq[utils.Range], Seq[PropertyMap]) = {
     val numberRegex = """(\d+)""".r
     val seedRanges = seedParser(lines.head)
     val propertyMaps = lines.tail.toList.multiSpan(_.isEmpty)
@@ -59,6 +62,6 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
     (seedRanges, propertyMaps)
   }
 
-  private def rangesToEndpoints(ranges: Seq[Range]): Seq[Long] = ranges
+  private def rangesToEndpoints(ranges: Seq[utils.Range]): Seq[Long] = ranges
     .flatMap { case Range(start, end) => Seq(start) ++ Seq(end) }.distinct.sorted
 }

@@ -2,6 +2,7 @@ package aoctest.aoc2023test.day5
 
 import aoc.aoc2023.day5
 import aoc.aoc2023.day5._
+import aoc.utils
 import aoctest.PuzzleTest
 import org.junit.{Assert, Test}
 
@@ -11,7 +12,7 @@ class TestDay5 extends PuzzleTest(Day5Puzzle) {
   @Test
   def testPropertyMapLookup(): Unit = {
     val propertyMap = new PropertyMap(
-      Seq(RangeShiftDefinition(day5.Range(98, 100), -48), RangeShiftDefinition(day5.Range(50, 98), 2)))
+      Seq(RangeShiftDefinition(utils.Range(98, 100), -48), RangeShiftDefinition(utils.Range(50, 98), 2)))
 
     val testData = Seq(
       (0, 0),

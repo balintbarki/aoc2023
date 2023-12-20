@@ -16,15 +16,13 @@ class TestDay19 extends PuzzleTest(Day19Puzzle) {
     testPart1Real("456651")
   }
 
-  @Ignore
   @Test
   def testDay19Part2(): Unit = {
     testPart2("167409079868000")
   }
 
-  @Ignore
   @Test
   def testDay19Part2real(): Unit = {
-    testPart2Real("0")
+    testPart2Real("131899818301477")
   }
 }

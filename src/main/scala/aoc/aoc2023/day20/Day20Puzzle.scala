@@ -2,11 +2,13 @@ package aoc.aoc2023.day20
 
 import aoc.aoc2023.DailyPuzzle2023
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.matching.Regex
 
 case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
   private val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
+  private var modules: mutable.Map[String, Module] = mutable.Map()
 
   override def calculatePart1(lines: Seq[String]): String = {
 
@@ -20,11 +22,26 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
     (Pulse.Low.triggerCnt * Pulse.High.triggerCnt).toString
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart2(lines: Seq[String]): String = {
+    parseInput(lines)
+
+    var stepCnt: Long = 0
+    do {
+      jobQueue.enqueue(() => Broadcaster.pulseFrom(Button, Pulse.Low))
+      processJobQueue()
+      stepCnt = stepCnt + 1
+
+      if (stepCnt % 1000000 == 0)
+        println(s"Performing step $stepCnt")
+
+    } while (!modules.getOrElse("rx", ???).asInstanceOf[Output].lowPulseReceived)
+
+    stepCnt.toString
+  }
 
   private def parseInput(lines: Seq[String]): Unit = {
 
-    val modules: mutable.Map[String, Module] = mutable.Map()
+    modules = mutable.Map()
 
     val regex = new Regex("""([\&\%]?\w+) -> (.*)""")
     val modulesWithTargets = lines.map {
@@ -39,9 +56,9 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
           throw new IllegalArgumentException(s"Unexpected module type: $id")
         }
         modules.update(module.id, module)
+        module.reset()
         (module, targets.split(",").map(_.trim))
     }
-
 
     modulesWithTargets.foreach { case (module, targets) =>
       targets.foreach(targetStr => {
@@ -58,6 +75,9 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
       }
       )
     }
+
+    Pulse.Low.reset()
+    Pulse.High.reset()
   }
 
   private def processJobQueue(): Unit = {
@@ -66,9 +86,60 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
     }
   }
 
+  private def doSomeChecks(): Unit = {
+    // Do some checks
+    // Check if there are flipflops with multiple sources
+    modules.values
+      .foreach {
+        case f: FlipFlop => if (f.sources.length > 1) println(s"FlipFlop ${f.id} has more than one sources")
+        case _           =>
+      }
+
+    // Check if there are flipflops with 1 input and output
+    modules.values
+      .foreach {
+        case f: FlipFlop => if ((f.sources.length == 1) && (f.targets.length == 1)) println(
+          s"FlipFlop ${f.id} has one source and one target")
+        case _           =>
+      }
+
+    // Steps until rx
+    var alreadyCheckedList: List[Module] = List()
+
+    @tailrec
+    def findRxDepth(currentDepth: Int, starts: List[Module]): Int = {
+      alreadyCheckedList = (alreadyCheckedList ++ starts).distinct
+      val rxModule = modules.getOrElse("rx", ???)
+      val allTargets = starts.flatMap(_.targets)
+      println(s"Finding RX in $allTargets")
+      if (allTargets.isEmpty)
+        Int.MaxValue
+      else if (allTargets.contains(rxModule))
+        currentDepth + 1
+      else {
+        findRxDepth(currentDepth + 1, allTargets.diff(alreadyCheckedList).distinct)
+      }
+    }
+
+    println(s"RX depth: ${findRxDepth(0, List(Button))}")
+
+    // Are there 2 conjunctions after each other?
+    modules.values.foreach(module => if (module.isInstanceOf[Conjunction] && module.targets
+      .count(target => target.isInstanceOf[Conjunction]) > 0) println(
+      s"Module ${module.id} is Conjunction with another Conjunction as target"))
+
+
+    ""
+  }
+
   private abstract class Module(val id: String) {
     var sources: List[Module] = List()
     var targets: List[Module] = List()
+
+    def reset(): Unit = {
+      sources = List()
+      targets = List()
+    }
 
     def addSource(source: Module): Unit = sources = sources :+ source
 
@@ -132,8 +203,14 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
     }
   }
 
-  private case class Output(override val id: String) extends Module("output") {
-    override protected def processPulseFrom(from: Module, pulse: Pulse): Unit = {}
+  private case class Output(override val id: String) extends Module(id) {
+
+    var lowPulseReceived = false
+
+    override protected def processPulseFrom(from: Module, pulse: Pulse): Unit = {
+      if (pulse == Pulse.Low)
+        lowPulseReceived = true
+    }
   }
 
   private case object Broadcaster extends Module("broadcaster") {

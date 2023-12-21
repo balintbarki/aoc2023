@@ -68,6 +68,9 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def mirrorAtColumn(column: Int): Matrix[T] = transpose.mirrorAtRow(column).transpose
 
+  def getCoordinateMap: Map[(Int, Int), T] = rows.indices
+    .flatMap(rowIdx => columns.indices.map(colIdx => (colIdx, rowIdx) -> get(colIdx, rowIdx))).toMap
+
   def print(minWidth: Int = 1, separator: Char = ' '): Unit = {
     rows.foreach(
       row => println(row.map(item => String.format("%" + minWidth + "s", item.toString)).mkString(separator.toString)))
@@ -91,6 +94,8 @@ object Matrix {
   def fromStrings(lines: List[String]): Matrix[Char] = Matrix(lines.map(_.toList))
 
   def fromStrings(lines: Seq[String]): Matrix[Char] = fromStrings(lines.toList)
+
+
 }
 
 object NumericMatrix {

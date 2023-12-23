@@ -9,7 +9,7 @@ class TestDay22 extends PuzzleTest(Day22Puzzle) {
 
   @Test
   def testDay22Part1(): Unit = {
-    testPart1("0")
+    testPart1("5")
   }
 
   @Test

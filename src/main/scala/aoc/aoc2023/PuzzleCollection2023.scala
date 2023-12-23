@@ -12,6 +12,8 @@ import aoc.aoc2023.day16.Day16Puzzle
 import aoc.aoc2023.day18.Day18Puzzle
 import aoc.aoc2023.day19.Day19Puzzle
 import aoc.aoc2023.day2.Day2Puzzle
+import aoc.aoc2023.day20.Day20Puzzle
+import aoc.aoc2023.day21.Day21Puzzle
 import aoc.aoc2023.day3.Day3Puzzle
 import aoc.aoc2023.day4.Day4Puzzle
 import aoc.aoc2023.day5.Day5Puzzle
@@ -39,6 +41,8 @@ object PuzzleCollection2023 extends PuzzleCollection(2023) {
     Day15Puzzle,
     Day16Puzzle,
     Day18Puzzle,
-    Day19Puzzle
+    Day19Puzzle,
+    Day20Puzzle,
+    Day21Puzzle
   )
 }

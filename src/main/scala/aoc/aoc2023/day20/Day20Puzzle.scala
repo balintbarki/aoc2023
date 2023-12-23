@@ -22,6 +22,9 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
     (Pulse.Low.triggerCnt * Pulse.High.triggerCnt).toString
   }
 
+  override def calculatePart2(lines: Seq[String]): String = ???
+  
+  /*
   override def calculatePart2(lines: Seq[String]): String = {
     parseInput(lines)
 
@@ -38,6 +41,8 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
 
     stepCnt.toString
   }
+
+   */
 
   private def parseInput(lines: Seq[String]): Unit = {
 

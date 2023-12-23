@@ -89,6 +89,8 @@ object Matrix {
 
   def apply[T](elements: List[List[T]]): Matrix[T] = new Matrix(elements)
 
+  def apply[T](elements: Seq[Seq[T]]): Matrix[T] = new Matrix(elements.map(_.toList).toList)
+
   def unapply[T](matrix: Matrix[T]): List[List[T]] = matrix.elements
 
   def fromStrings(lines: List[String]): Matrix[Char] = Matrix(lines.map(_.toList))

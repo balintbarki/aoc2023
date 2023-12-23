@@ -22,7 +22,6 @@ class TestDay23 extends PuzzleTest(Day23Puzzle) {
     testPart2("154")
   }
 
-  @Ignore
   @Test
   def testDay23Part2real(): Unit = {
     testPart2Real("6442")

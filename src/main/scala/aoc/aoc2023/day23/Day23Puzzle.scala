@@ -7,9 +7,15 @@ import aoc.utils.{Direction, Matrix}
 import scala.collection.mutable
 
 case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
-
   override def calculatePart1(lines: Seq[String]): String = {
+    calculate(lines, isDirected = true)
+  }
 
+  override def calculatePart2(lines: Seq[String]): String = {
+    calculate(lines, isDirected = false)
+  }
+
+  private def calculate(lines: Seq[String], isDirected: Boolean): String = {
     val entry: DirectedGraphNode = DirectedGraphNode("Entry")
     val exit: DirectedGraphNode = DirectedGraphNode("Exit")
 
@@ -24,20 +30,18 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
       endCoordinates -> exit
     )
 
-    discoverNodes(startCoordinates._1, startCoordinates._2, Direction.Down, entry, tileMap, nodeMap, endCoordinates)
+    discoverNodes(startCoordinates._1, startCoordinates._2, Direction.Down, entry, tileMap, nodeMap, startCoordinates,
+      endCoordinates,
+      isDirected)
 
     val graph = new DirectedGraph(nodeMap.values.toList)
     graph.getLongestPath(entry, exit).toString
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
-
   private def discoverNodes(
     x: Int, y: Int, dir: Direction, fromNode: DirectedGraphNode, tileMap: Map[(Int, Int), Tile],
     nodeMap: mutable.Map[(Int, Int), DirectedGraphNode],
-    endCoordinates: (Int, Int)): Unit = {
-
-    //println(s"Stepping from $x,$y ${dir.getAscii}")
+    startCoordinates: (Int, Int), endCoordinates: (Int, Int), isDirected: Boolean): Unit = {
 
     var nodeFound = false
     var weight = 1
@@ -48,7 +52,10 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
     while (!nodeFound) {
       //println(s" at $newX,$newY, weight $weight")
 
-      if ((newX, newY) == endCoordinates) {
+      if ((newX, newY) == startCoordinates) {
+        nodeFound = true
+      }
+      else if ((newX, newY) == endCoordinates) {
         val exitNode = nodeMap(endCoordinates)
         if (!fromNode.isConnectedTo(exitNode))
           fromNode.connectTo(exitNode, weight)
@@ -68,7 +75,7 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
           val tile = tileMap(newDir.adjustCoordinates(newX, newY))
           tile match {
             case Path            => true
-            case Slope(slopeDir) => slopeDir == newDir
+            case Slope(slopeDir) => (slopeDir == newDir) || !isDirected
             case _               => false
           }
         }
@@ -83,7 +90,7 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
           if (!fromNode.isConnectedTo(newNode)) {
             fromNode.connectTo(newNode, weight)
             possibleDirections.foreach { newDir =>
-              discoverNodes(newX, newY, newDir, newNode, tileMap, nodeMap, endCoordinates)
+              discoverNodes(newX, newY, newDir, newNode, tileMap, nodeMap, startCoordinates, endCoordinates, isDirected)
             }
           }
         }

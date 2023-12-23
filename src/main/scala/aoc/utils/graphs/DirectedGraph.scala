@@ -12,8 +12,25 @@ class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
 
   def getLongestPath(from: DirectedGraphNode, to: DirectedGraphNode): Int = {
 
-    from.nodesTo.map { case (nodeTo, weight) => if (nodeTo == to) weight else weight + getLongestPath(nodeTo, to) }
-      .max
+    def doGetLongestPath(
+      visitedNodes: List[DirectedGraphNode], from: DirectedGraphNode, to: DirectedGraphNode): Option[Int] = {
+      val newPathLengths = from.nodesTo.flatMap { case (nodeTo, weight) =>
+        if (nodeTo == to)
+          Some(weight)
+        else if (!visitedNodes.contains(nodeTo)) {
+          doGetLongestPath(visitedNodes :+ from, nodeTo, to).map(_ + weight)
+        } else
+          None
+      }
+
+      if (newPathLengths.nonEmpty)
+        Some(newPathLengths.max)
+      else
+        None
+    }
+
+    doGetLongestPath(List(), from, to)
+      .getOrElse(throw new IllegalArgumentException(s"Top level path finding returned None"))
   }
 
   def replaceNodesWithOneInOneOut(): Unit = {

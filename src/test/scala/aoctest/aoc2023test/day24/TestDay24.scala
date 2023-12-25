@@ -9,12 +9,14 @@ class TestDay24 extends PuzzleTest(Day24Puzzle) {
 
   @Test
   def testDay24Part1(): Unit = {
-    testPart1("0")
+    testPart1("2")
   }
 
   @Test
   def testDay24Part1real(): Unit = {
-    testPart1Real("0")
+    Day24Puzzle.minPos = BigDecimal(200000000000000L)
+    Day24Puzzle.maxPos = BigDecimal(400000000000000L)
+    testPart1Real("11098")
   }
 
   @Test

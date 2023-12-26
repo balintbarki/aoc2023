@@ -27,18 +27,6 @@ case class DirectedGraphNode(id: String = "") {
       throw new IllegalArgumentException(s"Connection already exists between nodes $this and $other")
   }
 
-  def connectFrom(other: DirectedGraphNode, weight: Int = 1): Unit = {
-    if (!isConnectedFrom(other))
-      nodesFrom.addOne((other, weight))
-    else
-      throw new IllegalArgumentException(s"Connection already exists between nodes $this and $other")
-
-    if (!other.isConnectedTo(this))
-      other.nodesTo.addOne((this, weight))
-    else
-      throw new IllegalArgumentException(s"Connection already exists between nodes $this and $other")
-  }
-
   def removeConnectionTo(other: DirectedGraphNode): Unit = {
     nodesTo.zipWithIndex.filter { case ((node, _), _) => node == other }
       .foreach { case (_, index) => nodesTo.remove(index) }

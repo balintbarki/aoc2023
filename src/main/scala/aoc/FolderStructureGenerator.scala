@@ -105,5 +105,5 @@ object FolderStructureGenerator extends App {
        |
        |""".stripMargin
 
-  generate(2015)
+  generate(2024)
 }

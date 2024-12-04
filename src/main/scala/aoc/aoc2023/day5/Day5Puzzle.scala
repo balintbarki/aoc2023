@@ -2,7 +2,7 @@ package aoc.aoc2023.day5
 
 import aoc.aoc2023.{DailyPuzzle2023, day5}
 import aoc.utils
-import aoc.utils.Range
+import aoc.utils.LongRange
 
 import scala.annotation.tailrec
 
@@ -12,28 +12,28 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
 
   override def calculatePart1(
     lines: Seq[String]): String = {
-    def seedParser: String => Seq[utils.Range] = line =>
-      """(\d+)""".r.findAllIn(line).matchData.map(matcher => Range(matcher.matched.toLong)).toSeq
+    def seedParser: String => Seq[utils.LongRange] = line =>
+      """(\d+)""".r.findAllIn(line).matchData.map(matcher => LongRange(matcher.matched.toLong)).toSeq
 
     val (seedRanges, propertyMaps) = parseData(lines, seedParser)
 
     seedRanges.map(
-      seedRange => propertyMaps.foldLeft(seedRange)((range, propertyMap) => Range(propertyMap.shift(range.start))))
+      seedRange => propertyMaps.foldLeft(seedRange)((range, propertyMap) => LongRange(propertyMap.shift(range.start))))
       .map(_.start).min.toString
   }
 
   override def calculatePart2(lines: Seq[String]): String = {
 
-    def seedParser: String => Seq[utils.Range] = line => {
+    def seedParser: String => Seq[utils.LongRange] = line => {
       val pairs =
         """(\d+\s+\d+)""".r.findAllIn(line).matchData
           .map(_.matched.split("\\s").toSeq).toSeq
 
-      val result = pairs.foldLeft(Seq[utils.Range]())(
+      val result = pairs.foldLeft(Seq[utils.LongRange]())(
         (acc, current) => {
           val start = current.head.toLong
           val end = start + current(1).toLong
-          acc :+ Range(start, end)
+          acc :+ LongRange(start, end)
         })
 
       result
@@ -47,14 +47,14 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
   }
 
   private def parseData(
-    lines: Seq[String], seedParser: String => Seq[utils.Range]): (Seq[utils.Range], Seq[PropertyMap]) = {
+    lines: Seq[String], seedParser: String => Seq[utils.LongRange]): (Seq[utils.LongRange], Seq[PropertyMap]) = {
     val numberRegex = """(\d+)""".r
     val seedRanges = seedParser(lines.head)
     val propertyMaps = lines.tail.toList.multiSpan(_.isEmpty)
       .map(lines => lines.filter("\\d+".r.unanchored.matches(_))).map(lines => {
       val rangeShiftDefinitions = lines.map(line => {
         val numbers = numberRegex.findAllIn(line).matchData.map(_.matched.toLong).toSeq
-        day5.RangeShiftDefinition(Range(numbers(1), numbers(1) + numbers(2)), numbers.head - numbers(1))
+        day5.RangeShiftDefinition(LongRange(numbers(1), numbers(1) + numbers(2)), numbers.head - numbers(1))
       })
       new PropertyMap(rangeShiftDefinitions)
     })
@@ -62,6 +62,6 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
     (seedRanges, propertyMaps)
   }
 
-  private def rangesToEndpoints(ranges: Seq[utils.Range]): Seq[Long] = ranges
-    .flatMap { case Range(start, end) => Seq(start) ++ Seq(end) }.distinct.sorted
+  private def rangesToEndpoints(ranges: Seq[utils.LongRange]): Seq[Long] = ranges
+    .flatMap { case LongRange(start, end) => Seq(start) ++ Seq(end) }.distinct.sorted
 }

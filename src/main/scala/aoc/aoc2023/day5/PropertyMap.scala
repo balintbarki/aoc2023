@@ -54,13 +54,13 @@ case class ShifterRangeEnd(override val value: Long, shift: Long) extends Shifte
 class PropertyMap(
   val rangeShiftDefinitions: Seq[RangeShiftDefinition]
 ) {
-  def shift(range: utils.Range): utils.Range = utils.Range(shift(range.start), shift(range.end))
+  def shift(range: utils.LongRange): utils.LongRange = utils.LongRange(shift(range.start), shift(range.end))
 
   def shift(srcId: Long): Long = rangeShiftDefinitions
     .find(rangeShiftDef => rangeShiftDef.range.start until rangeShiftDef.range.end contains srcId)
     .map(rangeDef => srcId + rangeDef.shift).getOrElse(srcId)
 
-  def processRanges(inputRanges: Seq[utils.Range]): Seq[utils.Range] = {
+  def processRanges(inputRanges: Seq[utils.LongRange]): Seq[utils.LongRange] = {
 
     // Create a sorted seq of range boundaries from the input and the shifter ranges
     val inputBoundaries = inputRanges
@@ -79,13 +79,13 @@ class PropertyMap(
           case (InputRangeStart(start), ShifterRangeStart(end, shift)) if start == end =>
             (None, true, shift)
           case (InputRangeStart(start), ShifterRangeStart(end, shift))                 =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), currentShift)), true, shift)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), currentShift)), true, shift)
           case (InputRangeStart(start), ShifterRangeStart(end, shift))                 =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), currentShift)), true, shift)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), currentShift)), true, shift)
           case (InputRangeStart(start), ShifterRangeEnd(end, _))                       =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), currentShift)), true, 0L)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), currentShift)), true, 0L)
           case (InputRangeStart(start), InputRangeEnd(end))                            =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), currentShift)), false, currentShift)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), currentShift)), false, currentShift)
           case (InputRangeEnd(_), InputRangeStart(_))                                  =>
             (None, true, currentShift)
           case (InputRangeEnd(_), ShifterRangeEnd(_, _))                               =>
@@ -95,9 +95,9 @@ class PropertyMap(
           case (ShifterRangeStart(_, shift), InputRangeStart(_))                       =>
             (None, true, shift)
           case (ShifterRangeStart(start, shift), InputRangeEnd(end))                   =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), shift)), false, shift)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), shift)), false, shift)
           case (ShifterRangeStart(start, shift), ShifterRangeEnd(end, _)) if toInclude =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), shift)), true, 0L)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), shift)), true, 0L)
           case (ShifterRangeStart(_, _), ShifterRangeEnd(_, _)) if !toInclude          =>
             (None, false, 0L)
           case (ShifterRangeEnd(_, _), InputRangeStart(_))                             =>
@@ -105,7 +105,7 @@ class PropertyMap(
           case (ShifterRangeEnd(_, _), ShifterRangeStart(_, shift))                    =>
             (None, toInclude, shift)
           case (ShifterRangeEnd(start, _), InputRangeEnd(end))                         =>
-            (Some(RangeShiftDefinition(utils.Range(start, end), 0)), false, 0L)
+            (Some(RangeShiftDefinition(utils.LongRange(start, end), 0)), false, 0L)
         }
 
         (acc ++ Seq(nextRangeShiftDefinitionOpt), nextToInclude, nextShift)

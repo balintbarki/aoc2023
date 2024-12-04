@@ -27,13 +27,44 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def count(p: T => Boolean): Int = elements.map(row => row.count(p)).sum
 
-  def transpose: Matrix[T] = {
+  def transpose: Matrix[T] =
     if (elements.isEmpty || elements.forall(_.isEmpty))
       this
     else {
       val rows = elements.indices
       val columns = elements.head.indices
       Matrix(columns.map(column => rows.foldLeft(List[T]())((acc, row) => acc :+ elements(row)(column))).toList)
+    }
+
+  def rotateLeft: Matrix[T] = {
+    if ((xSize == 0) || (ySize == 0)) {
+      this
+    }
+    else {
+      val rows = elements.indices
+      val columns = elements.head.indices
+      Matrix(columns.reverse.map { column =>
+        rows.map { row =>
+          val element = elements(row)(column)
+          element
+        }
+      })
+    }
+  }
+
+  def rotateRight: Matrix[T] = {
+    if ((xSize == 0) || (ySize == 0)) {
+      this
+    }
+    else {
+      val rows = elements.indices
+      val columns = elements.head.indices
+      Matrix(columns.map { column =>
+        rows.reverse.map { row =>
+          val element = elements(row)(column)
+          element
+        }
+      })
     }
   }
 

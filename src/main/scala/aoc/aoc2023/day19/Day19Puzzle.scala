@@ -3,7 +3,7 @@ package aoc.aoc2023.day19
 import aoc.aoc2023.DailyPuzzle2023
 import aoc.utils.ImplicitUtils.AddMultispanToList
 
-import aoc.utils.Range
+import aoc.utils.LongRange
 import scala.collection.mutable
 import scala.util.matching.Regex
 
@@ -33,7 +33,8 @@ case object Day19Puzzle extends DailyPuzzle2023(19, "Aplenty") {
       case List(first, second) => (first.map(parseRule), second.map(parsePart))
     }
 
-    val partRange = PartRange(x = Range(1, 4001), m = Range(1, 4001), a = Range(1, 4001), s = Range(1, 4001))
+    val partRange = PartRange(x = LongRange(1, 4001), m = LongRange(1, 4001), a = LongRange(1, 4001),
+      s = LongRange(1, 4001))
 
     evaluateRule("in", partRange) match {
       case (acceptedRanges, _) => acceptedRanges
@@ -133,11 +134,12 @@ case object Day19Puzzle extends DailyPuzzle2023(19, "Aplenty") {
         val mLong = m.toLong
         val aLong = a.toLong
         val sLong = s.toLong
-        PartRange(Range(xLong, xLong + 1), Range(mLong, mLong + 1), Range(aLong, aLong + 1), Range(sLong, sLong + 1))
+        PartRange(LongRange(xLong, xLong + 1), LongRange(mLong, mLong + 1), LongRange(aLong, aLong + 1),
+          LongRange(sLong, sLong + 1))
     }
   }
 
-  private case class PartRange(x: Range, m: Range, a: Range, s: Range)
+  private case class PartRange(x: LongRange, m: LongRange, a: LongRange, s: LongRange)
 
   private case class Condition(condition: PartRange => (Option[PartRange], Option[PartRange]))
 

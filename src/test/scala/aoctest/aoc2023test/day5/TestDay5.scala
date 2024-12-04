@@ -12,7 +12,7 @@ class TestDay5 extends PuzzleTest(Day5Puzzle) {
   @Test
   def testPropertyMapLookup(): Unit = {
     val propertyMap = new PropertyMap(
-      Seq(RangeShiftDefinition(utils.Range(98, 100), -48), RangeShiftDefinition(utils.Range(50, 98), 2)))
+      Seq(RangeShiftDefinition(utils.LongRange(98, 100), -48), RangeShiftDefinition(utils.LongRange(50, 98), 2)))
 
     val testData = Seq(
       (0, 0),

@@ -15,7 +15,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
   override def calculatePart1(lines: Seq[String]): Long = {
     val (map, (startX, startY)) = loadMapAndStartCoordinates(lines)
 
-    walk2Map(map, startX, startY)
+    walkMap(map, startX, startY)
 
     map.count {
       case walkable: Walkable => walkable.visited
@@ -26,12 +26,12 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
   override def calculatePart2(lines: Seq[String]): Long = {
     val (map, (startX, startY)) = loadMapAndStartCoordinates(lines)
 
-    val (walkedTiles, _, _) = walk2Map(map.copy, startX, startY)
+    val (walkedTiles, _, _) = walkMap(map.copy, startX, startY)
 
     walkedTiles.drop(1).distinct.count { case (x, y) =>
       if (x != startX || y != startY) {
         val mapWithObstacle = map.copy.updated(x, y, new ExtraObstacle())
-        val (_, _, loopFound) = walk2Map(mapWithObstacle, startX, startY)
+        val (_, _, loopFound) = walkMap(mapWithObstacle, startX, startY)
         loopFound
       }
       else
@@ -49,7 +49,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
     println()
   }
 
-  private def walk2Map(map: Matrix[Tile], startX: Int, startY: Int): (Seq[(Int, Int)], Boolean, Boolean) = {
+  private def walkMap(map: Matrix[Tile], startX: Int, startY: Int): (Seq[(Int, Int)], Boolean, Boolean) = {
 
     val cacheFindTiles: mutable.Map[(Int, Int, Direction), (Seq[(Int, Int)], Boolean)] = mutable.Map.empty
 
@@ -94,45 +94,6 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
     }
 
     doWalkMap(startX, startY, Direction.Up, Seq((startX, startY)))
-  }
-
-  private def walkMap(map: Matrix[Tile]): Unit = {
-
-    @tailrec
-    def doWalkMap(x: Int, y: Int, dir: Direction): Unit = {
-      val tile = map.get(x, y)
-
-      tile match {
-        case walkable: Walkable => walkable.visit()
-        case _                  => throw new IllegalArgumentException(s"Unexpected tile")
-      }
-
-      val (maybeNextX, maybeNextY) = dir match {
-        case Direction.Up    => (x, y - 1)
-        case Direction.Down  => (x, y + 1)
-        case Direction.Left  => (x - 1, y)
-        case Direction.Right => (x + 1, y)
-      }
-
-      if (maybeNextX < 0 || maybeNextY < 0 || map.xSize <= maybeNextX || map.ySize <= maybeNextY) {
-        // We are out of the map
-      } else {
-        val maybeNextTile = map.get(maybeNextX, maybeNextY)
-
-        val (nextX, nextY, nextDir) = maybeNextTile match {
-          case _: Walkable => (maybeNextX, maybeNextY, dir)
-          case _: Obstacle => (x, y, dir.rotateRight)
-        }
-
-        doWalkMap(nextX, nextY, nextDir)
-      }
-    }
-
-    val coordinateMap = map.getCoordinateMap
-    val ((x, y), _) = coordinateMap.find { case (_, tile) => tile.isInstanceOf[Start] }
-      .getOrElse(throw new IllegalArgumentException(s"Start position not found"))
-
-    doWalkMap(x, y, Direction.Up)
   }
 
   private def loadMapAndStartCoordinates(lines: Seq[String]): (Matrix[Tile], (Int, Int)) = {

@@ -1,5 +1,6 @@
 package aoc.utils.graphs
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 
 case class DirectedGraphNode(id: String = "") {
@@ -37,9 +38,26 @@ case class DirectedGraphNode(id: String = "") {
       .foreach { case (_, index) => nodesFrom.remove(index) }
   }
 
+  def getAllNodesTo: Set[DirectedGraphNode] = {
+
+    @tailrec
+    def collectAllNodesTo(
+      visitedNodes: Set[DirectedGraphNode],
+      newNodes: Set[DirectedGraphNode]): Set[DirectedGraphNode] = {
+      val newNodesTo = newNodes.flatMap { node => node.nodesTo.map { case (node, _) => node }.toSet }
+      val newVisitedNodes = visitedNodes union newNodes
+      val newNewNodes = newNodesTo diff newVisitedNodes
+      if (newNewNodes.nonEmpty)
+        collectAllNodesTo(newVisitedNodes, newNewNodes)
+      else
+        newVisitedNodes
+    }
+
+    collectAllNodesTo(Set.empty, nodesTo.map { case (node, _) => node }.toSet)
+  }
+
   private def nodesListContains(
     nodes: mutable.ListBuffer[(DirectedGraphNode, Int)], node: DirectedGraphNode): Boolean = {
     nodes.map { case (node, _) => node }.contains(node)
   }
-
 }

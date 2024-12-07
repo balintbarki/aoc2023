@@ -4,10 +4,17 @@ import scala.collection.mutable
 
 class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
 
+  val cacheIsPathBetween: mutable.Map[(DirectedGraphNode, DirectedGraphNode), Boolean] = mutable.Map.empty
+  val cacheShortestPath: mutable.Map[(DirectedGraphNode, DirectedGraphNode), Seq[DirectedGraphNode]] = mutable.Map.empty
+
   var nodes: mutable.ListBuffer[DirectedGraphNode] = mutable.ListBuffer.from(nodesArg)
 
   def getTotalWeight: Int = {
     nodes.map(node => node.nodesTo.map { case (_, weight) => weight }.sum).sum
+  }
+
+  def isPathBetween(first: DirectedGraphNode, second: DirectedGraphNode): Boolean = {
+    cacheIsPathBetween.getOrElseUpdate((first, second), first.getAllNodesTo.contains(second))
   }
 
   def getLongestPath(from: DirectedGraphNode, to: DirectedGraphNode): Int = {
@@ -36,6 +43,40 @@ class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
     visitedNodes.add(from)
     doGetLongestPath(from, to)
       .getOrElse(throw new IllegalArgumentException(s"Top level path finding returned None"))
+  }
+
+  def getShortestPath(from: DirectedGraphNode, to: DirectedGraphNode): Seq[DirectedGraphNode] = {
+
+    def calculateShortestPath(from: DirectedGraphNode, to: DirectedGraphNode): Seq[DirectedGraphNode] = {
+      if (from == to) {
+        Seq(from)
+      } else {
+
+        var currentShortestPath: Option[Seq[DirectedGraphNode]] = None
+
+        def updateShortestPath(path: Seq[DirectedGraphNode]): Unit = {
+          currentShortestPath match {
+            case Some(shortestPath) if path.size < shortestPath.size => currentShortestPath = Some(path)
+            case None                                                => currentShortestPath = Some(path)
+            case _                                                   =>
+          }
+        }
+
+        def findPath(walkedPath: Seq[DirectedGraphNode], to: DirectedGraphNode): Unit = {
+          val lastInPath = walkedPath.last
+          if (lastInPath.isConnectedTo(to)) {
+            updateShortestPath(walkedPath ++ Seq(to))
+          } else if (lastInPath.nodesTo.nonEmpty) {
+            lastInPath.nodesTo.foreach { case (node, _) => findPath(walkedPath ++ Seq(node), to) }
+          }
+        }
+
+        findPath(Seq(from), to)
+        currentShortestPath.getOrElse(Seq.empty)
+      }
+    }
+
+    cacheShortestPath.getOrElseUpdate((from, to), calculateShortestPath(from, to))
   }
 
   def replaceNodesWithOneInOneOut(): Unit = {

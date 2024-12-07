@@ -1,6 +1,8 @@
 package aoc.utils.graphs
 
+import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
 
@@ -79,6 +81,33 @@ class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
     cacheShortestPath.getOrElseUpdate((from, to), calculateShortestPath(from, to))
   }
 
+  def keepOnlyNodes(nodesToKeep: Seq[DirectedGraphNode]): DirectedGraph = {
+    val nodesKept = nodesToKeep.map { nodeToKeep =>
+      val nodesToToKeep = nodeToKeep.nodesTo.filter { case (node, _) => nodesToKeep.contains(node) }
+      val nodesFromToKeep = nodeToKeep.nodesFrom.filter { case (node, _) => nodesToKeep.contains(node) }
+      nodeToKeep.copy(nodesTo = nodesToToKeep, nodesFrom = nodesFromToKeep)
+    }
+
+    // Redirect connections to the new instances
+    // First collect the new connections, clear the current ones, then connect to the new instances
+    val nodesWithNodesToAndNodesFrom = nodesKept.map { nodeKept =>
+      val newNodesTo = nodeKept.nodesTo
+        .flatMap { case (nodeTo, weight) => nodesKept.find(_.id == nodeTo.id).map((_, weight)) }
+      nodeKept.nodesTo.clear()
+      nodeKept.nodesFrom.clear()
+
+      (nodeKept, newNodesTo)
+    }
+
+    nodesWithNodesToAndNodesFrom.foreach { case (node, nodesTo) =>
+      nodesTo.foreach { case (nodeTo, weight) =>
+        node.connectTo(nodeTo, weight)
+      }
+    }
+
+    new DirectedGraph(nodesKept.toList)
+  }
+
   def replaceNodesWithOneInOneOut(): Unit = {
 
     var nodeRemoved = true
@@ -102,5 +131,33 @@ class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
       nodeRemoved = nodes.length != replacedNodes.length
       nodes = replacedNodes
     }
+  }
+
+  def getNodesInOrder: Seq[DirectedGraphNode] = {
+
+    @tailrec
+    def createOrderedNodeList(
+      startList: ListBuffer[DirectedGraphNode],
+      endList: ListBuffer[DirectedGraphNode],
+      remainingNodes: List[DirectedGraphNode]): List[DirectedGraphNode] = {
+
+      if (remainingNodes.length <= 1) {
+        startList.addAll(remainingNodes).addAll(endList).toList
+      } else {
+        val remainingGraph = new DirectedGraph(remainingNodes.toList)
+        val initialNodes = remainingGraph.nodes.filter(_.nodesFrom.isEmpty)
+        val lastNodes = remainingGraph.nodes.filter(_.nodesTo.isEmpty)
+
+        startList.addAll(initialNodes)
+        endList.insertAll(0, lastNodes)
+
+        val keptNodes = remainingNodes.filter(!initialNodes.contains(_)).filter(!lastNodes.contains(_))
+        val reducedGraph = keepOnlyNodes(keptNodes)
+
+        createOrderedNodeList(startList, endList, reducedGraph.nodes.toList)
+      }
+    }
+
+    createOrderedNodeList(ListBuffer[DirectedGraphNode](), ListBuffer[DirectedGraphNode](), nodes.toList)
   }
 }

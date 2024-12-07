@@ -3,13 +3,12 @@ package aoc.utils.graphs
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-case class DirectedGraphNode(id: String = "") {
+case class DirectedGraphNode(
+  id: String = "",
+  nodesTo: mutable.ListBuffer[(DirectedGraphNode, Int)] = mutable.ListBuffer(),
+  nodesFrom: mutable.ListBuffer[(DirectedGraphNode, Int)] = mutable.ListBuffer()) {
 
-  // Nodes to which there is a transition from this node, with a weight
-  val nodesTo: mutable.ListBuffer[(DirectedGraphNode, Int)] = mutable.ListBuffer()
-
-  // Nodes from which there is a transition to this node, with a weight
-  val nodesFrom: mutable.ListBuffer[(DirectedGraphNode, Int)] = mutable.ListBuffer()
+  override def toString = s"${this.getClass.getSimpleName}($id)"
 
   def isConnectedTo(other: DirectedGraphNode): Boolean = nodesListContains(nodesTo, other)
 

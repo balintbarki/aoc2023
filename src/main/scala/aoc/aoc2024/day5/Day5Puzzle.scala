@@ -1,61 +1,51 @@
 package aoc.aoc2024.day5
 
 import aoc.aoc2024.DailyPuzzle2024
+import aoc.utils.graphs.{DirectedGraph, DirectedGraphNode}
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 case object Day5Puzzle extends DailyPuzzle2024(5, "Print Queue") {
 
   override def calculatePart1(lines: Seq[String]): String = {
-
-    val orderingRules = lines.takeWhile(_.nonEmpty).map(_.split("\\|").toSeq)
-    val updatePageNumbersSeq = lines.takeRight(lines.size - orderingRules.size - 1).map(_.split(",").toSeq)
-
-    val mustPrintLaterByPages: mutable.Map[String, mutable.Set[String]] = mutable.Map.empty
-    val mustPrintEarlierByPages: mutable.Map[String, mutable.Set[String]] = mutable.Map.empty
-
-    orderingRules.foreach { case Seq(first, second) =>
-      val mustPrintLaterForFirst = mustPrintLaterByPages.getOrElseUpdate(first, mutable.Set.empty[String])
-      mustPrintLaterForFirst.addOne(second)
-
-      val mustPrintEarlierForSecond = mustPrintEarlierByPages.getOrElseUpdate(second, mutable.Set.empty[String])
-      mustPrintEarlierForSecond.addOne(first)
-    }
-
-    updatePageNumbersSeq.map { updatePageNumbers =>
-
-      if (fulfilsRules(updatePageNumbers, mustPrintLaterByPages, mustPrintEarlierByPages)) {
-        updatePageNumbers((updatePageNumbers.size - 1) / 2).toInt
-      } else
-        0
-    }.sum.toString
+    getMiddleElementSumForOrderedPageLists(lines, true).toString
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart2(lines: Seq[String]): String = {
+    getMiddleElementSumForOrderedPageLists(lines, false).toString
+  }
 
+  private def getMiddleElementSumForOrderedPageLists(lines: Seq[String], forThoseInRightOrder: Boolean): Int = {
+    val (orderingRules, updatePageNumbersSeq) = getOrderingRulesAndUpdatePageNumbers(lines)
 
-  private def fulfilsRules(
-    updatePageNumbers: Seq[String],
-    mustPrintLaterByPages: mutable.Map[String, mutable.Set[String]],
-    mustPrintEarlierByPages: mutable.Map[String, mutable.Set[String]]): Boolean = {
-    updatePageNumbers.indices.forall { leftIndex =>
-      if (leftIndex < updatePageNumbers.size - 1) {
-        val left = updatePageNumbers(leftIndex)
-        Range(leftIndex + 1, updatePageNumbers.size).forall { rightIndex =>
-          val right = updatePageNumbers(rightIndex)
+    val nodes: mutable.Map[String, DirectedGraphNode] = mutable.Map.empty
 
-          val leftCheck = mustPrintLaterByPages.get(left).forall { mustPrintLater => mustPrintLater.contains(right) }
-          val rightCheck = mustPrintEarlierByPages.get(right)
-            .forall { mustPrintEarlier => mustPrintEarlier.contains(left) }
-
-          val result = leftCheck && rightCheck
-          result
-        }
-      }
-      else
-        true
-
+    orderingRules.foreach { case (first, second) =>
+      val firstNode = nodes.getOrElseUpdate(first, DirectedGraphNode(first))
+      val secondNode = nodes.getOrElseUpdate(second, DirectedGraphNode(second))
+      firstNode.connectTo(secondNode)
     }
+
+    val nodeGraph = new DirectedGraph(nodes.values.toList)
+
+    val orderedLines = updatePageNumbersSeq.map { updatePageNumbers =>
+      val reducedGraph = nodeGraph
+        .keepOnlyNodes(
+          nodes.filter { case (id, _) => updatePageNumbers.contains(id) }.map { case (_, node) => node }.toSeq)
+
+      val orderedNodeIds = reducedGraph.getNodesInOrder.map(_.id)
+      val inOrder = orderedNodeIds == updatePageNumbers
+      (inOrder, orderedNodeIds)
+    }
+
+    orderedLines.filter { case (wasOrdered, _) => wasOrdered == forThoseInRightOrder }.map { case (_, line) => line }
+      .map { line => line((line.size - 1) / 2).toInt }.sum
+  }
+
+  private def getOrderingRulesAndUpdatePageNumbers(lines: Seq[String]): (Seq[(String, String)], Seq[Seq[String]]) = {
+    val orderingRules = lines.takeWhile(_.nonEmpty).map(_.split("\\|").toSeq)
+      .map { case Seq(first: String, second: String) => (first, second) }
+    val updatePageNumbersSeq = lines.takeRight(lines.size - orderingRules.size - 1).map(_.split(",").toSeq)
+    (orderingRules, updatePageNumbersSeq)
   }
 }

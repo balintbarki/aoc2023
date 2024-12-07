@@ -11,7 +11,7 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
   import aoc.utils.ImplicitUtils._
 
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     def seedParser: String => Seq[utils.LongRange] = line =>
       """(\d+)""".r.findAllIn(line).matchData.map(matcher => LongRange(matcher.matched.toLong)).toSeq
 
@@ -19,10 +19,10 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
 
     seedRanges.map(
       seedRange => propertyMaps.foldLeft(seedRange)((range, propertyMap) => LongRange(propertyMap.shift(range.start))))
-      .map(_.start).min.toString
+      .map(_.start).min
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
 
     def seedParser: String => Seq[utils.LongRange] = line => {
       val pairs =
@@ -43,7 +43,7 @@ case object Day5Puzzle extends DailyPuzzle2023(5, "If You Give A Seed A Fertiliz
 
     val finalRanges = propertyMaps.foldLeft(seedRange)((ranges, propertyMap) => propertyMap.processRanges(ranges))
 
-    rangesToEndpoints(finalRanges).min.toString
+    rangesToEndpoints(finalRanges).min
   }
 
   private def parseData(

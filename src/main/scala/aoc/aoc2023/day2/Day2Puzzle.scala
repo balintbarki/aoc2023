@@ -9,15 +9,15 @@ case object Day2Puzzle extends DailyPuzzle2023(2, "Cube Conundrum") {
   private val maxBlue = 14
 
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
 
     val possibleGames = getPossibleGames(lines.map(getGameData))
-    sumGameIds(possibleGames).toString
+    sumGameIds(possibleGames)
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
-    getMinimumCubeCounts(lines.map(getGameData)).map { case (red, green, blue) => red * green * blue }.sum.toString
+    lines: Seq[String]): Long = {
+    getMinimumCubeCounts(lines.map(getGameData)).map { case (red, green, blue) => red * green * blue }.sum
   }
 
   private def getPossibleGames(gameDataSeq: Seq[GameData]): Seq[GameData] = gameDataSeq.filter(gameData => {

@@ -5,10 +5,10 @@ import aoc.utils.Parsing
 
 case object Day9Puzzle extends DailyPuzzle2023(9, "Mirage Maintenance") {
   override def calculatePart1(
-    lines: Seq[String]): String = lines.map(Parsing.stringToNumbers).map(extrapolateLast).sum.toString
+    lines: Seq[String]): Long = lines.map(Parsing.stringToNumbers).map(extrapolateLast).sum
 
   override def calculatePart2(
-    lines: Seq[String]): String = lines.map(Parsing.stringToNumbers).map(extrapolateFirst).sum.toString
+    lines: Seq[String]): Long = lines.map(Parsing.stringToNumbers).map(extrapolateFirst).sum
 
   private def extrapolateLast(input: Seq[Long]): Long = {
 

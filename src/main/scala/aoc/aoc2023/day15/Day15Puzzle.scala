@@ -6,9 +6,9 @@ import scala.collection.mutable
 
 case object Day15Puzzle extends DailyPuzzle2023(15, "Lens Library") {
 
-  override def calculatePart1(lines: Seq[String]): String = lines.head.split(",").map(hash).sum.toString
+  override def calculatePart1(lines: Seq[String]): Long = lines.head.split(",").map(hash).sum
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
 
     val removeRegex = """(\w+)-""".r
     val insertRegex = """(\w+)=(\d)""".r
@@ -21,7 +21,7 @@ case object Day15Puzzle extends DailyPuzzle2023(15, "Lens Library") {
 
     boxes
       .map(box => box.lensSlots.zipWithIndex.map { case ((_, focus), index) => (box.id + 1) * (index + 1) * focus }.sum)
-      .sum.toString
+      .sum
   }
 
   private def hash(s: String): Int = s.foldLeft(0)((acc, c) => ((acc + c.toInt) * 17) % 256)

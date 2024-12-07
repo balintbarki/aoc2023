@@ -20,13 +20,13 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     tiles.count(_.hasLight)
   }
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     val grid = Matrix.fromStrings(lines)
 
-    calculate(grid, 0, 0, Direction.Left).toString
+    calculate(grid, 0, 0, Direction.Left)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
     val grid = Matrix.fromStrings(lines)
 
     val startPositions =
@@ -39,7 +39,7 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
       case (x, y, dir) => calculate(grid, x, y, dir)
     }
 
-    values.max.toString
+    values.max
   }
 
   private def runLight(

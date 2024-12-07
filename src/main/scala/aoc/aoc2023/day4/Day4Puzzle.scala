@@ -5,10 +5,10 @@ import aoc.aoc2023.DailyPuzzle2023
 case object Day4Puzzle extends DailyPuzzle2023(4, "Scratchcards") {
 
   override def calculatePart1(
-    lines: Seq[String]): String = getCardData(lines).map(data => math.pow(2, data.winningCnt - 1).floor.toInt).sum
-    .toString
+    lines: Seq[String]): Long = getCardData(lines).map(data => math.pow(2, data.winningCnt - 1).floor.toInt).sum
 
-  override def calculatePart2(lines: Seq[String]): String = {
+
+  override def calculatePart2(lines: Seq[String]): Long = {
     val initialDeck = getCardData(lines)
 
     initialDeck.foldLeft(initialDeck)((deck, initialCard) => {
@@ -17,7 +17,7 @@ case object Day4Puzzle extends DailyPuzzle2023(4, "Scratchcards") {
           card.copy(cntInDeck = card.cntInDeck + deck(initialCard.id - 1).cntInDeck)
         case _                                                                                       => card
       })
-    }).map(_.cntInDeck).sum.toString
+    }).map(_.cntInDeck).sum
   }
 
   private def getCardData(lines: Seq[String]): IndexedSeq[CardData] = {

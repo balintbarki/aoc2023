@@ -7,12 +7,12 @@ import scala.collection.mutable
 
 case object Day5Puzzle extends DailyPuzzle2024(5, "Print Queue") {
 
-  override def calculatePart1(lines: Seq[String]): String = {
-    getMiddleElementSumForOrderedPageLists(lines, true).toString
+  override def calculatePart1(lines: Seq[String]): Long = {
+    getMiddleElementSumForOrderedPageLists(lines, true)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
-    getMiddleElementSumForOrderedPageLists(lines, false).toString
+  override def calculatePart2(lines: Seq[String]): Long = {
+    getMiddleElementSumForOrderedPageLists(lines, false)
   }
 
   private def getMiddleElementSumForOrderedPageLists(lines: Seq[String], forThoseInRightOrder: Boolean): Int = {

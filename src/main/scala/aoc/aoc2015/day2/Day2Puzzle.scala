@@ -5,7 +5,7 @@ import aoc.aoc2015.DailyPuzzle2015
 case object Day2Puzzle extends DailyPuzzle2015(2, "I Was Told There Would Be No Math") {
 
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
 
     getInput(lines).map(sides => {
       for {
@@ -14,11 +14,11 @@ case object Day2Puzzle extends DailyPuzzle2015(2, "I Was Told There Would Be No 
         if firstIdx < secondIdx
       } yield first * second * 2
     }.sum + sides.head * sides(1)
-    ).sum.toString
+    ).sum
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = getInput(lines).map(sides => (sides.head + sides(1)) * 2 + sides.product).sum.toString
+    lines: Seq[String]): Long = getInput(lines).map(sides => (sides.head + sides(1)) * 2 + sides.product).sum
 
   private def getInput(lines: Seq[String]): Seq[Seq[Int]] = lines.map(line => {
     line.split("x").map(_.toInt).toSeq.sorted

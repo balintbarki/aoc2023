@@ -6,7 +6,7 @@ import aoc.utils.graphs.{UndirectedGraph, UndirectedGraphNode}
 import scala.collection.mutable
 
 case object Day25Puzzle extends DailyPuzzle2023(25, "unknown") {
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
 
     val graph = parseInput(lines)
 
@@ -22,10 +22,10 @@ case object Day25Puzzle extends DailyPuzzle2023(25, "unknown") {
       }
     } while (cutSize != 3)
 
-    (firstGraph.nodes.size * secondGraph.nodes.size).toString
+    (firstGraph.nodes.size * secondGraph.nodes.size)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart2(lines: Seq[String]): Long = ???
 
   private def parseInput(lines: Seq[String]): UndirectedGraph = {
     val nodeMap: mutable.Map[String, UndirectedGraphNode] = mutable.Map()

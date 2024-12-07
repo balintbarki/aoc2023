@@ -6,15 +6,15 @@ import aoc.utils.Matrix
 
 case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     calculate(lines, 0)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
     calculate(lines, 1)
   }
 
-  private def calculate(lines: Seq[String], allowedDiff: Int): String = {
+  private def calculate(lines: Seq[String], allowedDiff: Int): Long = {
     val inputs = lines.toList.multiSpanWithoutDelimiter(_.isEmpty)
     inputs.map { input =>
       val matrix = Matrix.fromStrings(input)
@@ -31,6 +31,6 @@ case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
         throw new RuntimeException("Result should never be 0")
       }
       result
-    }.sum.toString
+    }.sum
   }
 }

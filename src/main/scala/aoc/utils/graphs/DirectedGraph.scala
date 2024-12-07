@@ -82,17 +82,24 @@ class DirectedGraph(nodesArg: List[DirectedGraphNode]) {
   }
 
   def keepOnlyNodes(nodesToKeep: Seq[DirectedGraphNode]): DirectedGraph = {
-    val nodesKept = nodesToKeep.map { nodeToKeep =>
+    val nodesKeptWithConnections = nodesToKeep.map { nodeToKeep =>
       val nodesToToKeep = nodeToKeep.nodesTo.filter { case (node, _) => nodesToKeep.contains(node) }
-      val nodesFromToKeep = nodeToKeep.nodesFrom.filter { case (node, _) => nodesToKeep.contains(node) }
-      nodeToKeep.copy(nodesTo = nodesToToKeep, nodesFrom = nodesFromToKeep)
+      //val nodesFromToKeep = nodeToKeep.nodesFrom.filter { case (node, _) => nodesToKeep.contains(node) }
+      //nodeToKeep.copy(nodesTo = nodesToToKeep, nodesFrom = nodesFromToKeep)
+      (nodeToKeep, nodesToToKeep)
     }
+
+    val nodesKept = nodesKeptWithConnections.map { case (node, _) => node }
 
     // Redirect connections to the new instances
     // First collect the new connections, clear the current ones, then connect to the new instances
-    val nodesWithNodesToAndNodesFrom = nodesKept.map { nodeKept =>
-      val newNodesTo = nodeKept.nodesTo
-        .flatMap { case (nodeTo, weight) => nodesKept.find(_.id == nodeTo.id).map((_, weight)) }
+    val nodesWithNodesToAndNodesFrom = nodesKeptWithConnections.map { case (nodeKept, nodesToKept) =>
+      val newNodesTo = nodesToKept
+        .flatMap { case (nodeTo, weight) => nodesKept.find {
+          _.id == nodeTo.id
+        }
+          .map((_, weight))
+        }
       nodeKept.nodesTo.clear()
       nodeKept.nodesFrom.clear()
 

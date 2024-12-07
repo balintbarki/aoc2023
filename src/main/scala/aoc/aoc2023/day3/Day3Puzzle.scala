@@ -8,18 +8,18 @@ case object Day3Puzzle extends DailyPuzzle2023(3, "Gear Ratios") {
   private val symbolRegex: Regex = """[/*&+$\-%=@#]""".r
 
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val schematicsLines = lines.zipWithIndex
     val boxes = getAllBoxes(schematicsLines)
 
     boxes.map(box => if (boxHasSymbol(box))
       box.number
     else
-      0).sum.toString
+      0).sum
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val schematicsLines = lines.zipWithIndex
     val boxes = getAllBoxes(schematicsLines)
     val asteriskMap: Map[Coordinate, Seq[Int]] = boxes
@@ -38,7 +38,7 @@ case object Day3Puzzle extends DailyPuzzle2023(3, "Gear Ratios") {
       })
 
     asteriskMap.filter { case (_, numbers) => numbers.length == 2 }
-      .map { case (_, numbers) => numbers.head * numbers.last }.sum.toString
+      .map { case (_, numbers) => numbers.head * numbers.last }.sum
   }
 
   private def boxHasSymbol(box: Box): Boolean = {

@@ -7,15 +7,15 @@ import aoc.utils.{Direction, Matrix}
 import scala.collection.mutable
 
 case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     calculate(lines, isDirected = true)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
     calculate(lines, isDirected = false)
   }
 
-  private def calculate(lines: Seq[String], isDirected: Boolean): String = {
+  private def calculate(lines: Seq[String], isDirected: Boolean): Long = {
     val entry: DirectedGraphNode = DirectedGraphNode("Entry")
     val exit: DirectedGraphNode = DirectedGraphNode("Exit")
 
@@ -35,7 +35,7 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
       isDirected)
 
     val graph = new DirectedGraph(nodeMap.values.toList)
-    graph.getLongestPath(entry, exit).toString
+    graph.getLongestPath(entry, exit)
   }
 
   private def discoverNodes(

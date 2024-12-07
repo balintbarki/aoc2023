@@ -10,11 +10,11 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "Hot Springs") {
   val damagedCode = "X"
   val unknownCode = "_"
 
-  override def calculatePart1(lines: Seq[String]): String = calculateUnfolded(lines, 1)
+  override def calculatePart1(lines: Seq[String]): Long = calculateUnfolded(lines, 1)
 
-  override def calculatePart2(lines: Seq[String]): String = calculateUnfolded(lines, 5)
+  override def calculatePart2(lines: Seq[String]): Long = calculateUnfolded(lines, 5)
 
-  private def calculateUnfolded(lines: Seq[String], unfoldCnt: Int): String = {
+  private def calculateUnfolded(lines: Seq[String], unfoldCnt: Int): Long = {
 
     // Memoization cache
     val memo: mutable.Map[(String, Long, Seq[Int]), Long] = mutable.Map()
@@ -84,6 +84,6 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "Hot Springs") {
       })
     }
 
-    input.map { case (record, groups) => calculate(record, 0L, groups) }.sum.toString
+    input.map { case (record, groups) => calculate(record, 0L, groups) }.sum
   }
 }

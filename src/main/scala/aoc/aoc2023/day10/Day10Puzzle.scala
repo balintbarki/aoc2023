@@ -4,16 +4,16 @@ import aoc.aoc2023.DailyPuzzle2023
 
 case object Day10Puzzle extends DailyPuzzle2023(10, "Pipe Maze") {
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
 
     val allNodes = createNodeMap(lines)
 
     discoverNeighbors(allNodes)
-    walkPipeAndGetFarthestDistance(allNodes).toString
+    walkPipeAndGetFarthestDistance(allNodes)
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
 
     val nodeMap = createNodeMap(lines)
 
@@ -53,7 +53,7 @@ case object Day10Puzzle extends DailyPuzzle2023(10, "Pipe Maze") {
 
     stretchedNodeMap.foreach { case (_, node) => if (!node.isWalked && !node.isPartOfLoop) node.symbol = 'I' }
 
-    nodeMap.count { case (_, node) => !node.isWalked && !node.isStretched && !node.isPartOfLoop }.toString
+    nodeMap.count { case (_, node) => !node.isWalked && !node.isStretched && !node.isPartOfLoop }
   }
 
   def printNodeMap(nodeMap: Map[(Int, Int), Node]): Unit = {

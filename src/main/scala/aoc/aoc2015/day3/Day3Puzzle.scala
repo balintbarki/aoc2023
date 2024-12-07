@@ -4,13 +4,13 @@ import aoc.aoc2015.DailyPuzzle2015
 
 case object Day3Puzzle extends DailyPuzzle2015(3, "Perfectly Spherical Houses in a Vacuum") {
 
-  override def calculatePart1(lines: Seq[String]): String = processSteps(lines.head).distinct.size.toString
+  override def calculatePart1(lines: Seq[String]): Long = processSteps(lines.head).distinct.size
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val indexedChars = lines.head.zipWithIndex
     (0 to 1).flatMap(i => processSteps(indexedChars.collect { case (c, index) if (index % 2 == i) => c })).distinct.size
-      .toString
+
   }
 
   private def processSteps(line: IndexedSeq[Char]): Seq[House] = line

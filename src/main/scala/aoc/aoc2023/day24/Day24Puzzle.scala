@@ -12,7 +12,7 @@ case object Day24Puzzle extends DailyPuzzle2023(24, "unknown") {
   var minPos: BigDecimal = BigDecimal(7)
   var maxPos: BigDecimal = BigDecimal(27)
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
 
     val input = parseInput(lines)
 
@@ -25,10 +25,10 @@ case object Day24Puzzle extends DailyPuzzle2023(24, "unknown") {
       case (Some(vector), Some(t1), Some(t2)) => (0 <= t1) && (0 <= t2) && (minPos <= vector.x) && (vector
         .x < maxPos) && (minPos <= vector.y) && (vector.y < maxPos)
       case _                                  => false
-    }.toString
+    }
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart2(lines: Seq[String]): Long = ???
 
   private def parseInput(lines: Seq[String]): Seq[(Vector, Vector)] = {
     lines.map(

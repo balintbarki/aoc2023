@@ -6,15 +6,15 @@ import aoc.utils.geometry.{Point, Polygon}
 
 case object Day18Puzzle extends DailyPuzzle2023(18, "unknown") {
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     val inputs = lines
       .map(_.split(" ").toSeq)
       .map { case Seq(dir: String, length: String, _) => (Direction.parse(dir), length.toLong) }
 
-    calculate(inputs).toString
+    calculate(inputs)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
     val codeRegex = """\(#([0-9a-f]{5})([0-3])\)""".r
 
     val inputs = lines
@@ -29,8 +29,7 @@ case object Day18Puzzle extends DailyPuzzle2023(18, "unknown") {
       }
       }
 
-    calculate(inputs).toString
-
+    calculate(inputs)
   }
 
   private def calculate(inputs: Seq[(Direction, Long)]): Long = {

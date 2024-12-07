@@ -11,15 +11,15 @@ case object Day3Puzzle extends DailyPuzzle2024(3, "Mull It Over") {
   val MultiplyPattern = raw"""mul\((\d{1,3}),(\d{1,3})\)"""
   val LongestMultiply = "mul(123,123)".size
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
 
     MultiplyPattern.r.unanchored.findAllIn(lines.mkString).matchData.map { matchData =>
       matchData.group(1).toInt * matchData.group(2).toInt
-    }.sum.toString
+    }.sum
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
-    processRemainingInput(lines.mkString, true, 0).toString
+  override def calculatePart2(lines: Seq[String]): Long = {
+    processRemainingInput(lines.mkString, true, 0)
   }
 
   @tailrec

@@ -98,7 +98,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
     }
   }
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     val blockMatrix = Matrix.fromStrings(lines).map(c => new Block(c.asDigit))
     val startX = 0
     val startY = 0
@@ -124,10 +124,10 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
     printBlockMatrix(blockMatrix)
 
-    blockMatrix.get(targetX, targetY).minHeatLossPerDirPerStepLeft.map { case (_, values) => values.min }.min.toString
+    blockMatrix.get(targetX, targetY).minHeatLossPerDirPerStepLeft.map { case (_, values) => values.min }.min
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
+  override def calculatePart2(lines: Seq[String]): Long = ???
 
 
   private def printBlockMatrix(blockMatrix: Matrix[Block]): Unit = {

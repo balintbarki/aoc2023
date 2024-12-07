@@ -9,7 +9,7 @@ case object Day4Puzzle extends DailyPuzzle2024(4, "Ceres Search") {
   val xmasPattern = XMAS.r
   val xmasReversePattern = XMAS.reverse.r
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
     val transposed = transpose(lines)
     val diagonal1Lines = diagonal(lines)
     val diagonal2Lines = diagonal(rotateLeft(lines))
@@ -19,14 +19,13 @@ case object Day4Puzzle extends DailyPuzzle2024(4, "Ceres Search") {
       findXmas(diagonal1Lines, "Diagonal1"),
       findXmas(diagonal2Lines, "Diagonal2"),
     ).sum
-      .toString
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
     val rows = Range(1, lines.size - 1)
     val columns = Range(1, lines.head.size - 1)
 
-    val result = rows.flatMap { row =>
+    rows.flatMap { row =>
       columns.map { column =>
         if (lines(row)(column) == 'A') {
           val topLeft = lines(row - 1)(column - 1)
@@ -45,8 +44,7 @@ case object Day4Puzzle extends DailyPuzzle2024(4, "Ceres Search") {
         else
           0
       }
-    }.sum.toString
-    result
+    }.sum
   }
 
   private def findXmas(lines: Seq[String], dir: String): Int = {

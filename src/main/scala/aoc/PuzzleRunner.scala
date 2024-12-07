@@ -11,16 +11,18 @@ import scala.util.{Failure, Success, Try}
 
 object PuzzleRunner extends App {
 
+  val notImplementedMessage = "This puzzle is not yet implemented"
+
   private val notImplementedPuzzle: DailyPuzzle = new DailyPuzzle(0, 0, "Not implemented") {
     override def calculatePart1(
-      lines: Seq[String]): String = "This puzzle is not implemented"
+      lines: Seq[String]): Long = -1
 
     override def calculatePart2(
-      lines: Seq[String]): String = "This puzzle is not implemented"
+      lines: Seq[String]): Long = -1
   }
   private val puzzleCollections: Seq[PuzzleCollection] = Seq(
-    //PuzzleCollection2015,
-    //PuzzleCollection2023,
+    PuzzleCollection2015,
+    PuzzleCollection2023,
     PuzzleCollection2024,
   )
 
@@ -29,15 +31,22 @@ object PuzzleRunner extends App {
     val startTime = System.currentTimeMillis()
 
     val result = Try({
-      if (part == 1)
+      val calculateResult = if (part == 1)
         puzzle.calculatePart1(lines)
       else if (part == 2)
         puzzle.calculatePart2(lines)
       else
         throw new IllegalArgumentException("Unexpected part")
+
+      if (calculateResult < 0)
+        notImplementedMessage
+      else
+        calculateResult.toString
+
     }) match {
-      case Success(value)     => value
-      case Failure(exception) => exception.printStackTrace(); exception.getMessage
+      case Success(value)                  => value
+      case Failure(_: NotImplementedError) => notImplementedMessage
+      case Failure(exception)              => exception.printStackTrace(); exception.getMessage
     }
 
     val deltaT = System.currentTimeMillis() - startTime

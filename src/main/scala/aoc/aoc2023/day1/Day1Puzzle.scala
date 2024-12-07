@@ -20,7 +20,7 @@ case object Day1Puzzle extends DailyPuzzle2023(1, "Trebuchet?!") {
   )
 
   override def calculatePart1(
-    lines: Seq[String]): String = calculateCalibration(lines).toString
+    lines: Seq[String]): Long = calculateCalibration(lines)
 
   def calculateLineResult(line: String, preprocessFnOpt: Option[String => String] = None): Int = {
     val preprocessedLine = preprocessFnOpt.map(preprocessFn => preprocessFn(line)).getOrElse(line)
@@ -32,7 +32,7 @@ case object Day1Puzzle extends DailyPuzzle2023(1, "Trebuchet?!") {
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = calculateCalibration(lines, Some(replaceFirstAndLastDigitStrings)).toString
+    lines: Seq[String]): Long = calculateCalibration(lines, Some(replaceFirstAndLastDigitStrings))
 
   def replaceFirstAndLastDigitStrings(line: String): String = {
 

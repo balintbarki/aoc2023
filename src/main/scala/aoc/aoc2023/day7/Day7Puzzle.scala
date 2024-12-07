@@ -5,12 +5,12 @@ import aoc.aoc2023.DailyPuzzle2023
 
 case object Day7Puzzle extends DailyPuzzle2023(7, "Camel Cards") {
   override def calculatePart1(
-    lines: Seq[String]): String = calculate(lines, useJoker = false)
+    lines: Seq[String]): Long = calculate(lines, useJoker = false)
 
   override def calculatePart2(
-    lines: Seq[String]): String = calculate(lines, useJoker = true)
+    lines: Seq[String]): Long = calculate(lines, useJoker = true)
 
-  private def calculate(lines: Seq[String], useJoker: Boolean): String = {
+  private def calculate(lines: Seq[String], useJoker: Boolean): Long = {
     val lineRegex = s"([${HandType.codeValues(useJoker).mkString("")}]{5}) (\\d+)".r
     val handsWithBets = lines.map {
       case lineRegex(codes, bet) => (HandType(codes.toCharArray, useJoker = useJoker), bet.toLong)
@@ -21,7 +21,7 @@ case object Day7Puzzle extends DailyPuzzle2023(7, "Camel Cards") {
     sortedHandsWithBets.map { handWithBet => {
       (sortedHandsWithBets.indexOf(handWithBet) + 1) * handWithBet._2
     }
-    }.sum.toString
+    }.sum
   }
 }
 

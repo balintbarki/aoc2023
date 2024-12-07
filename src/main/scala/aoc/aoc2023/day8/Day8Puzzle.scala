@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 case object Day8Puzzle extends DailyPuzzle2023(8, "Haunted Wasteland") {
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val (steps, desertMap) = getInput(lines)
 
     var nodeKey = "AAA" -> desertMap.getOrElse("AAA", ???)
@@ -21,11 +21,11 @@ case object Day8Puzzle extends DailyPuzzle2023(8, "Haunted Wasteland") {
       nodeKey = newKey -> desertMap.getOrElse(newKey, throw new IllegalArgumentException("This should not happen"))
     }
 
-    stepCnt.toString
+    stepCnt
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val (steps, desertMap) = getInput(lines)
 
     val nodeKeys: Seq[String] = desertMap.keys.filter(_.endsWith("A")).toSeq
@@ -52,7 +52,7 @@ case object Day8Puzzle extends DailyPuzzle2023(8, "Haunted Wasteland") {
       cycleCnt
     }).map(BigInt(_))
 
-    lcm(cycles).toString
+    lcm(cycles).toLong
   }
 
   private def getInput(lines: Seq[String]): (IndexedSeq[Int], Map[String, Seq[String]]) = {

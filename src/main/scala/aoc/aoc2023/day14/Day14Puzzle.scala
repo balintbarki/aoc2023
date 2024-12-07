@@ -6,16 +6,16 @@ import aoc.utils.Matrix
 
 case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") {
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
 
     val result = tiltNorth(Matrix.fromStrings(lines))
-    calculateNorthBeamLoad(result).toString
+    calculateNorthBeamLoad(result)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = {
+  override def calculatePart2(lines: Seq[String]): Long = {
 
     val result = runCycle(Matrix.fromStrings(lines), 1000000000)
-    calculateNorthBeamLoad(result).toString
+    calculateNorthBeamLoad(result)
   }
 
   def runCycle(matrix: Matrix[Char], times: Long): Matrix[Char] = {

@@ -10,7 +10,7 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
   private val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
   private var modules: mutable.Map[String, Module] = mutable.Map()
 
-  override def calculatePart1(lines: Seq[String]): String = {
+  override def calculatePart1(lines: Seq[String]): Long = {
 
     parseInput(lines)
 
@@ -19,11 +19,11 @@ case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
       processJobQueue()
     }
     )
-    (Pulse.Low.triggerCnt * Pulse.High.triggerCnt).toString
+    (Pulse.Low.triggerCnt * Pulse.High.triggerCnt)
   }
 
-  override def calculatePart2(lines: Seq[String]): String = ???
-  
+  override def calculatePart2(lines: Seq[String]): Long = ???
+
   /*
   override def calculatePart2(lines: Seq[String]): String = {
     parseInput(lines)

@@ -16,18 +16,18 @@ case object Day19Puzzle extends DailyPuzzle2023(19, "Aplenty") {
   )
 
   override def calculatePart1(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
     val (_, parts) = lines.toList.multiSpanWithoutDelimiter(_.isBlank) match {
       case List(first, second) => (first.map(parseRule), second.map(parsePart))
     }
 
     parts.flatMap(part => evaluateRule("in", part) match {
       case (acceptedRanges, _) => acceptedRanges.map(part => part.x.start + part.m.start + part.a.start + part.s.start)
-    }).sum.toString
+    }).sum
   }
 
   override def calculatePart2(
-    lines: Seq[String]): String = {
+    lines: Seq[String]): Long = {
 
     lines.toList.multiSpanWithoutDelimiter(_.isBlank) match {
       case List(first, second) => (first.map(parseRule), second.map(parsePart))
@@ -39,7 +39,6 @@ case object Day19Puzzle extends DailyPuzzle2023(19, "Aplenty") {
     evaluateRule("in", partRange) match {
       case (acceptedRanges, _) => acceptedRanges
         .map(partRange => partRange.x.length * partRange.m.length * partRange.a.length * partRange.s.length).sum
-        .toString
     }
   }
 

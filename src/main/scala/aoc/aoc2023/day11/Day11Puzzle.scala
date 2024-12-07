@@ -7,10 +7,10 @@ import scala.math.abs
 case object Day11Puzzle extends DailyPuzzle2023(11, "Cosmic Expansion") {
 
   override def calculatePart1(
-    lines: Seq[String]): String = calculateDistanceSumInExpandedUniverse(lines, 2)
+    lines: Seq[String]): Long = calculateDistanceSumInExpandedUniverse(lines, 2)
 
   override def calculatePart2(
-    lines: Seq[String]): String = calculateDistanceSumInExpandedUniverse(lines, 1000000)
+    lines: Seq[String]): Long = calculateDistanceSumInExpandedUniverse(lines, 1000000)
 
   private def calculateDistanceSumInExpandedUniverse(lines: Seq[String], times: Long) = {
 
@@ -22,8 +22,7 @@ case object Day11Puzzle extends DailyPuzzle2023(11, "Cosmic Expansion") {
         (second, secondIdx) <- expandedGalaxies.zipWithIndex
         if firstIdx < secondIdx
       } yield abs(first._1 - second._1) + abs(first._2 - second._2)
-    }.sum.toString
-
+    }.sum
   }
 
   private def expandUniverse(lines: Seq[String], times: Long): Seq[(Long, Long)] = {

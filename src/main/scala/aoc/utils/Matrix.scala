@@ -27,6 +27,10 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def count(p: T => Boolean): Int = elements.map(row => row.count(p)).sum
 
+  def find(p: T => Boolean): Option[T] = {
+    elements.flatten.find(p)
+  }
+
   def transpose: Matrix[T] =
     if (elements.isEmpty || elements.forall(_.isEmpty))
       this
@@ -106,7 +110,6 @@ class Matrix[T](val elements: List[List[T]]) {
     rows.foreach(
       row => println(row.map(item => String.format("%" + minWidth + "s", item.toString)).mkString(separator.toString)))
   }
-
 }
 
 class NumericMatrix[T: Numeric](elements: List[List[T]]) extends Matrix[T](elements) {

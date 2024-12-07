@@ -35,7 +35,7 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "Hot Springs") {
 
     def calculate(line: String, acc: Long, groups: Seq[Int]): Long = {
 
-      memo.getOrElse((line, acc, groups), {
+      memo.getOrElseUpdate((line, acc, groups), {
 
         val minLength = groups.sum + groups.length - 1
 
@@ -77,8 +77,6 @@ case object Day12Puzzle extends DailyPuzzle2023(12, "Hot Springs") {
 
           acc + (startsWithGroupResult + startsWithUnknownResult + startsWithOperationalResult)
         }
-
-        memo.update((line, acc, groups), result)
 
         result
       })

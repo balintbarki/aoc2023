@@ -21,8 +21,8 @@ object PuzzleRunner extends App {
       lines: Seq[String]): Long = -1
   }
   private val puzzleCollections: Seq[PuzzleCollection] = Seq(
-    PuzzleCollection2015,
-    PuzzleCollection2023,
+    //PuzzleCollection2015,
+    //PuzzleCollection2023,
     PuzzleCollection2024,
   )
 

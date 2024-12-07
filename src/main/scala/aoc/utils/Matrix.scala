@@ -1,5 +1,9 @@
 package aoc.utils
 
+import aoc.aoc2024.day6.Day6Puzzle.Tile
+
+import scala.collection.mutable
+
 class Matrix[T](val elements: List[List[T]]) {
 
   if (elements.nonEmpty && elements.head.nonEmpty)
@@ -18,9 +22,11 @@ class Matrix[T](val elements: List[List[T]]) {
 
   def rows: List[List[T]] = elements
 
-  def columns: List[List[T]] = this.transpose.rows
+  def columns: List[List[T]] = transpose.rows
 
   def get(x: Int, y: Int): T = elements(y)(x)
+
+  def updated(x: Int, y: Int, item: T): Matrix[T] = Matrix(elements.updated(y, elements(y).updated(x, item)))
 
   def map[B](f: T => B): Matrix[B] = Matrix(
     elements.indices.map(row => elements.head.indices.map(column => f(elements(row)(column))).toList).toList)
@@ -112,13 +118,6 @@ class Matrix[T](val elements: List[List[T]]) {
   }
 }
 
-class NumericMatrix[T: Numeric](elements: List[List[T]]) extends Matrix[T](elements) {
-  def sumAll(implicit num: Numeric[T]): T = {
-    elements.foldLeft(num.zero)(
-      (rowAcc, row) => num.plus(rowAcc, row.foldLeft(num.zero)((colAcc, elem) => num.plus(colAcc, elem))))
-  }
-}
-
 object Matrix {
 
   def apply[T](elements: List[List[T]]): Matrix[T] = new Matrix(elements)
@@ -132,8 +131,4 @@ object Matrix {
   def fromStrings(lines: Seq[String]): Matrix[Char] = fromStrings(lines.toList)
 
 
-}
-
-object NumericMatrix {
-  def apply[T: Numeric](elements: List[List[T]]): NumericMatrix[T] = new NumericMatrix(elements)
 }

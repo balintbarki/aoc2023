@@ -2,9 +2,30 @@ package aoc.aoc2024.day8
 
 import aoc.aoc2024.DailyPuzzle2024
 
-case object Day8Puzzle extends DailyPuzzle2024(8, "unknown") {
+case object Day8Puzzle extends DailyPuzzle2024(8, "Resonant Collinearity") {
 
-  override def calculatePart1(lines: Seq[String]): Long = {
+  import VectorOperations._
+
+  override def calculatePart1(lines: Seq[String]): Long = calculate(lines, getNodesFromAntennasPart1)
+
+  override def calculatePart2(lines: Seq[String]): Long = calculate(lines, getNodesFromAntennasPart2)
+
+  private def getNodesFromAntennasPart1(
+    first: (Int, Int), second: (Int, Int), maxX: Int, maxY: Int): Seq[(Int, Int)] = {
+    val delta = second - first
+    Seq(first - delta, second + delta)
+  }
+
+  private def getNodesFromAntennasPart2(
+    first: (Int, Int), second: (Int, Int), maxX: Int, maxY: Int): Seq[(Int, Int)] = {
+    val delta = second - first
+    val maxSteps = math.max(maxX / delta._1, maxY / delta._2) + 1
+    Range(0, maxSteps).flatMap { idx => Seq(first - delta * idx, first + delta * idx) }
+  }
+
+  private def calculate(
+    lines: Seq[String], getNodesFromAntennas: ((Int, Int), (Int, Int), Int, Int) => Seq[(Int, Int)]): Long = {
+
     val nodes = lines.indices.flatMap(rowIdx => lines(rowIdx).indices.flatMap(colIdx => lines(rowIdx)(colIdx) match {
       case c if ('a' to 'z').contains(c) || ('A' to 'Z').contains(c) || ('0' to '9').contains(c) => Some(
         ((colIdx, rowIdx), c))
@@ -22,68 +43,23 @@ case object Day8Puzzle extends DailyPuzzle2024(8, "unknown") {
       val allUniquePairsForC = nodesWithC.indices.dropRight(1)
         .flatMap { idx => Range(idx + 1, nodesWithC.size).map(otherIdx => (nodesWithC(idx), nodesWithC(otherIdx))) }
 
-      val newNodes = allUniquePairsForC.flatMap { case ((firstX, firstY), (secondX, secondY)) =>
-
-        def newNodeIfInRange(x: Int, y: Int): Option[(Int, Int)] =
-          if ((0 <= x) && (x <= maxX) && (0 <= y) && (y <= maxY))
-            Some((x, y))
-          else
-            None
-
-        val deltaX = math.abs(firstX - secondX)
-        val deltaY = math.abs(firstY - secondY)
-
-        val ((firstNewX, firstNewY), (secondNewX, secondNewY)) = if ((firstX <= secondX)) {
-          if (firstY <= secondY) {
-            // f .
-            // . s
-            val firstNewX = firstX - deltaX
-            val firstNewY = firstY - deltaY
-            val secondNewX = secondX + deltaX
-            val secondNewY = secondY + deltaY
-            ((firstNewX, firstNewY), (secondNewX, secondNewY))
-          } else {
-            // . s
-            // f .
-            val firstNewX = firstX - deltaX
-            val firstNewY = firstY + deltaY
-            val secondNewX = secondX + deltaX
-            val secondNewY = secondY - deltaY
-            ((firstNewX, firstNewY), (secondNewX, secondNewY))
-          }
-        } else {
-          if (firstY <= secondY) {
-            // . f
-            // s .
-            val firstNewX = firstX + deltaX
-            val firstNewY = firstY - deltaY
-            val secondNewX = secondX - deltaX
-            val secondNewY = secondY + deltaY
-            ((firstNewX, firstNewY), (secondNewX, secondNewY))
-          } else {
-            // s .
-            // . f
-            val firstNewX = firstX + deltaX
-            val firstNewY = firstY + deltaY
-            val secondNewX = secondX - deltaX
-            val secondNewY = secondY - deltaY
-            ((firstNewX, firstNewY), (secondNewX, secondNewY))
-          }
-        }
-
-        val firstNewNode = newNodeIfInRange(firstNewX, firstNewY)
-        val secondNewNode = newNodeIfInRange(secondNewX, secondNewY)
-
-        Seq(firstNewNode, secondNewNode).flatten
-      }
+      val newNodes = allUniquePairsForC.flatMap { case (first, second) =>
+        getNodesFromAntennas(first, second, maxX, maxY)
+      }.filter { case (x, y) => ((0 <= x) && (x <= maxX) && (0 <= y) && (y <= maxY)) }
 
       newNodes
-
     }
 
     allNewNodes.distinct.size
   }
 
-  override def calculatePart2(lines: Seq[String]): Long = ???
+  object VectorOperations {
+    implicit class VectorOperation(vector: (Int, Int)) {
+      def +(other: (Int, Int)): (Int, Int) = (vector._1 + other._1, vector._2 + other._2)
 
+      def -(other: (Int, Int)): (Int, Int) = (vector._1 - other._1, vector._2 - other._2)
+
+      def *(factor: Int): (Int, Int) = (vector._1 * factor, vector._2 * factor)
+    }
+  }
 }

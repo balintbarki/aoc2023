@@ -4,31 +4,46 @@ import aoc.aoc2024.DailyPuzzle2024
 
 case object Day7Puzzle extends DailyPuzzle2024(7, "Bridge Repair") {
 
-  override def calculatePart1(lines: Seq[String]): Long = {
+  override def calculatePart1(lines: Seq[String]): Long = calculate(lines, allowConcatenate = false)
+
+  override def calculatePart2(lines: Seq[String]): Long = calculate(lines, allowConcatenate = true)
+
+  private def calculate(lines: Seq[String], allowConcatenate: Boolean): Long = {
     val inputs = getInputs(lines)
     inputs.filter { case (result, operands) =>
-      isEquationPossible(result, operands)
+      isEquationPossible(result, operands, allowConcatenate)
     }
       .map { case (result, _) => result }
       .sum
   }
 
-  override def calculatePart2(lines: Seq[String]): Long = ???
-
-  private def isEquationPossible(result: Long, operands: Seq[Long]): Boolean = {
+  private def isEquationPossible(result: Long, operands: Seq[Long], allowConcatenate: Boolean): Boolean = {
     if (1 == operands.size) {
       result == operands.head
     } else {
       val lastOperand = operands.last
-      val resultIfSum = result - lastOperand
-      val resultIfProduct = result / lastOperand
+      val remainingOperands = operands.dropRight(1)
 
-      isEquationPossible(resultIfSum, operands.dropRight(1)) || {
-        if (result % lastOperand == 0)
-          isEquationPossible(resultIfProduct, operands.dropRight(1))
-        else
-          false
+      def checkSumIsPossible = if (result > lastOperand) {
+        isEquationPossible(result - lastOperand, remainingOperands, allowConcatenate)
       }
+      else
+        false
+
+      def checkProductIsPossible = if (result % lastOperand == 0) {
+        isEquationPossible(result / lastOperand, remainingOperands, allowConcatenate)
+      }
+      else
+        false
+
+      def checkConcatenateIsPossible = if (allowConcatenate && result.toString.endsWith(lastOperand.toString)) {
+        val resultIfConcatenate = result.toString.dropRight(lastOperand.toString.length).toLong
+        isEquationPossible(resultIfConcatenate, remainingOperands, allowConcatenate)
+      }
+      else
+        false
+
+      checkSumIsPossible || checkProductIsPossible || checkConcatenateIsPossible
     }
   }
 
@@ -37,5 +52,4 @@ case object Day7Puzzle extends DailyPuzzle2024(7, "Bridge Repair") {
       case Seq(result, operands) => (result.toLong, operands.trim.split(" ").map(_.toLong).toSeq)
     })
   }
-
 }

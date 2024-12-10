@@ -9,12 +9,12 @@ class TestDay9 extends PuzzleTest(Day9Puzzle) {
 
   @Test
   def testDay9Part1(): Unit = {
-    testPart1("0")
+    testPart1("1928")
   }
 
   @Test
   def testDay9Part1real(): Unit = {
-    testPart1Real("0")
+    testPart1Real("6359213660505")
   }
 
   @Test
@@ -27,4 +27,3 @@ class TestDay9 extends PuzzleTest(Day9Puzzle) {
     testPart2Real("0")
   }
 }
-

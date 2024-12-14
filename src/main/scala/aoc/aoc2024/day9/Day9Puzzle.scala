@@ -51,42 +51,29 @@ case object Day9Puzzle extends DailyPuzzle2024(9, "Disk Fragmenter") {
 
     val allFiles = items.filter(_.isInstanceOf[File]).map(_.asInstanceOf[File])
 
-    var cnt = 0
     allFiles.reverse.map { file =>
-      println(s"Processing $cnt out of ${allFiles.size}, total items: ${items.size}")
-      cnt += 1
-      val fileIndex = items.indexOf(file)
-      val firstSuitableGapOpt = items.filter(_.isInstanceOf[Gap])
-        .find(gap => (gap.length >= file.length) && (items.indexOf(gap) < fileIndex))
-      firstSuitableGapOpt.map { gap =>
-        val gapIndex = items.indexOf(gap)
+      val itemsWithIndices = items.zipWithIndex
+      val fileIndex = itemsWithIndices.find { case (item, _) => item == file }.map { case (_, index) => index }
+        .getOrElse(
+          throw new IllegalArgumentException("Unexpected, file not found")
+        )
 
-        //println(s"Removing ${gap.length} long gap at $gapIndex")
+      val firstSuitableGapOpt = itemsWithIndices.filter({ case (item, _) => item.isInstanceOf[Gap] })
+        .find { case (gap, gapIndex) => (gap.length >= file.length) && (gapIndex < fileIndex) }
+
+      firstSuitableGapOpt.map { case (gap, gapIndex) =>
+
         items.remove(gapIndex)
-        //println(s"Inserting file ${file.id} at $gapIndex")
         items.insert(gapIndex, file)
 
-        //println(s"Removing file at $fileIndex")
         items.remove(fileIndex)
-        //println(s"Inserting ${file.length} long gap at $fileIndex")
         items.insert(fileIndex, new Gap(file.length))
 
         if (gap.length > file.length) {
-          //println(s"Inserting ${gap.length - file.length} long gap at $gapIndex + 1")
           items.insert(gapIndex + 1, new Gap(gap.length - file.length))
         }
-
-        //println()
       }
     }
-
-    /*
-    println(items.map {
-      case f: File => Seq.fill(f.length)(f.id.toString).mkString
-      case g: Gap  => Seq.fill(g.length)(".").mkString
-    }.mkString)
-
-     */
 
     val result: Long = items.flatMap {
       case f: File => Seq.fill(f.length)(f.id.toLong)
@@ -97,12 +84,9 @@ case object Day9Puzzle extends DailyPuzzle2024(9, "Disk Fragmenter") {
 
   }
 
-  private abstract class Item(val length: Int) {
-  }
+  private abstract class Item(val length: Int)
 
-  private class File(override val length: Int, val id: Int) extends Item(length) {
-
-  }
+  private class File(override val length: Int, val id: Int) extends Item(length)
 
   private class Gap(override val length: Int) extends Item(length)
 

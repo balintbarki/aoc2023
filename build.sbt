@@ -6,3 +6,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "AdventOfCode"
   )
+
+libraryDependencies += "com.github.sbt" % "junit-interface" % "0.13.2" % Test

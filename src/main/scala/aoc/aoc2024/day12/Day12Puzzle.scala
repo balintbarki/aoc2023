@@ -69,17 +69,6 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
   private def setUpFences(plotCoordinateMap: Map[(Int, Int), Plot], maxX: Int, maxY: Int): Unit = {
     plotCoordinateMap.foreach { case ((x, y), plot) =>
-      if ((x == 0) || (plotCoordinateMap((x - 1, y)).regionId != plot.regionId))
-        plot.leftFence = true
-
-      if ((y == 0) || (plotCoordinateMap((x, y - 1)).regionId != plot.regionId))
-        plot.upFence = true
-
-      if ((x == maxX) || (plotCoordinateMap((x + 1, y)).regionId != plot.regionId))
-        plot.rightFence = true
-
-      if ((y == maxY) || (plotCoordinateMap((x, y + 1)).regionId != plot.regionId))
-        plot.downFence = true
 
       if (0 < x)
         plot.leftNeighbor = plotCoordinateMap((x - 1, y))
@@ -101,18 +90,24 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
   private class Plot(val plantId: Char) {
     var regionId: Int = UNKNOWN_REGION
-
-    var leftFence: Boolean = false
-    var rightFence: Boolean = false
-    var upFence: Boolean = false
-    var downFence: Boolean = false
-
     var leftNeighbor: Plot = OutOfGarden
     var rightNeighbor: Plot = OutOfGarden
     var upNeighbor: Plot = OutOfGarden
     var downNeighbor: Plot = OutOfGarden
 
-    def fenceCnt: Int = Seq(leftFence, rightFence, upFence, downFence).count(_ == true)
+    def leftFence: Boolean = neighborInDifferentRegion(leftNeighbor)
+
+    def rightFence: Boolean = neighborInDifferentRegion(rightNeighbor)
+
+    def upFence: Boolean = neighborInDifferentRegion(upNeighbor)
+
+    def downFence: Boolean = neighborInDifferentRegion(downNeighbor)
+
+    def fenceCnt: Int = Seq(
+      leftFence,
+      rightFence,
+      upFence,
+      downFence).count(_ == true)
 
     def cornerCnt: Int = Seq(
       leftFence && upFence,
@@ -131,6 +126,8 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
     ).count(_ == true)
 
     private def neighborInSameRegion(neighbor: Plot) = neighbor.regionId == regionId
+
+    private def neighborInDifferentRegion(neighbor: Plot) = !neighborInSameRegion(neighbor)
   }
 
   private object OutOfGarden extends Plot('.')

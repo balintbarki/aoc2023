@@ -7,8 +7,8 @@ import scala.collection.mutable
 import scala.util.matching.Regex
 
 case object Day20Puzzle extends DailyPuzzle2023(20, "Pulse Propagation") {
-  private val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
-  private var modules: mutable.Map[String, Module] = mutable.Map()
+  private val jobQueue: mutable.Queue[() => Unit] = mutable.Queue.empty
+  private var modules: mutable.Map[String, Module] = mutable.Map.empty
 
   override def calculatePart1(lines: Seq[String]): Long = {
 

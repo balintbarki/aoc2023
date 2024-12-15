@@ -10,7 +10,7 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
   def calculate(grid: Matrix[Char], x: Int, y: Int, from: Direction): Int = {
     val tiles: Matrix[Tile] = grid.map(c => Tile(c))
 
-    val jobQueue: mutable.Queue[() => Unit] = mutable.Queue()
+    val jobQueue: mutable.Queue[() => Unit] = mutable.Queue.empty
 
     jobQueue.enqueue(() => runLight(x, y, from, tiles, grid.rows.length, grid.columns.length, jobQueue))
     while (jobQueue.nonEmpty) {

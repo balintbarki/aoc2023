@@ -37,6 +37,8 @@ class Matrix[T](val elements: List[List[T]]) {
     elements.flatten.find(p)
   }
 
+  def allElements: Seq[T] = elements.flatten
+
   def transpose: Matrix[T] =
     if (elements.isEmpty || elements.forall(_.isEmpty))
       this

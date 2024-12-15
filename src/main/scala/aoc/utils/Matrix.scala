@@ -130,5 +130,7 @@ object Matrix {
 
   def fromStrings(lines: Seq[String]): Matrix[Char] = fromStrings(lines.toList)
 
+  def fromStringsToInts(lines: Seq[String]): Matrix[Int] = Matrix(lines.map(line => line.map(c => c - '0')).toList)
+
 
 }

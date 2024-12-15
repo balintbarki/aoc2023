@@ -9,6 +9,27 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
   override def calculatePart1(lines: Seq[String]): Long = {
 
+    val garden = createGarden(lines)
+
+    val allPlots = garden.allElements
+    allPlots.map(_.regionId).distinct.map { regionId =>
+      val plotsInRegion = allPlots.filter(_.regionId == regionId)
+      plotsInRegion.map(_.fenceCnt).sum * plotsInRegion.size
+    }.sum
+  }
+
+  override def calculatePart2(lines: Seq[String]): Long = {
+    val garden = createGarden(lines)
+
+    val allPlots = garden.allElements
+    allPlots.map(_.regionId).distinct.map { regionId =>
+      val plotsInRegion = allPlots.filter(_.regionId == regionId)
+      val cornerCnt = plotsInRegion.map(plot => plot.cornerCnt).sum
+      cornerCnt * plotsInRegion.size
+    }.sum
+  }
+
+  private def createGarden(lines: Seq[String]): Matrix[Plot] = {
     val garden = readGarden(lines)
     val plotCoordinateMap = garden.getCoordinateMap
 
@@ -43,14 +64,8 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
     setUpFences(plotCoordinateMap, garden.xSize - 1, garden.ySize - 1)
 
-    val allPlots = garden.allElements
-    allPlots.map(_.regionId).distinct.map { regionId =>
-      val plotsInRegion = allPlots.filter(_.regionId == regionId)
-      plotsInRegion.map(_.fenceCnt).sum * plotsInRegion.size
-    }.sum
+    garden
   }
-
-  override def calculatePart2(lines: Seq[String]): Long = ???
 
   private def setUpFences(plotCoordinateMap: Map[(Int, Int), Plot], maxX: Int, maxY: Int): Unit = {
     plotCoordinateMap.foreach { case ((x, y), plot) =>
@@ -65,6 +80,18 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
       if ((y == maxY) || (plotCoordinateMap((x, y + 1)).regionId != plot.regionId))
         plot.downFence = true
+
+      if (0 < x)
+        plot.leftNeighbor = plotCoordinateMap((x - 1, y))
+
+      if (x < maxX)
+        plot.rightNeighbor = plotCoordinateMap((x + 1, y))
+
+      if (0 < y)
+        plot.upNeighbor = plotCoordinateMap((x, y - 1))
+
+      if (y < maxY)
+        plot.downNeighbor = plotCoordinateMap((x, y + 1))
     }
   }
 
@@ -74,12 +101,38 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
   private class Plot(val plantId: Char) {
     var regionId: Int = UNKNOWN_REGION
+
     var leftFence: Boolean = false
     var rightFence: Boolean = false
     var upFence: Boolean = false
     var downFence: Boolean = false
 
+    var leftNeighbor: Plot = OutOfGarden
+    var rightNeighbor: Plot = OutOfGarden
+    var upNeighbor: Plot = OutOfGarden
+    var downNeighbor: Plot = OutOfGarden
+
     def fenceCnt: Int = Seq(leftFence, rightFence, upFence, downFence).count(_ == true)
+
+    def cornerCnt: Int = Seq(
+      leftFence && upFence,
+      leftFence && downFence,
+      rightFence && upFence,
+      rightFence && downFence,
+      neighborInSameRegion(leftNeighbor) && neighborInSameRegion(upNeighbor) && leftNeighbor.upFence && upNeighbor
+        .leftFence,
+      neighborInSameRegion(leftNeighbor) && neighborInSameRegion(downNeighbor) && leftNeighbor.downFence && downNeighbor
+        .leftFence,
+      neighborInSameRegion(rightNeighbor) && neighborInSameRegion(upNeighbor) && rightNeighbor.upFence && upNeighbor
+        .rightFence,
+      neighborInSameRegion(rightNeighbor) && neighborInSameRegion(downNeighbor) && rightNeighbor
+        .downFence && downNeighbor.rightFence,
+
+    ).count(_ == true)
+
+    private def neighborInSameRegion(neighbor: Plot) = neighbor.regionId == regionId
   }
+
+  private object OutOfGarden extends Plot('.')
 
 }

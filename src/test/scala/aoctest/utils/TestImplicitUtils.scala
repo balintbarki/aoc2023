@@ -1,6 +1,6 @@
 package aoctest.utils
 
-import aoc.utils.ImplicitUtils.AddMultispanToList
+import aoc.utils.ImplicitUtils.AddMultispanToSeq
 import org.junit.{Assert, Test}
 
 class TestImplicitUtils {

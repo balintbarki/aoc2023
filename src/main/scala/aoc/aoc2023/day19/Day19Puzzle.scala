@@ -1,7 +1,7 @@
 package aoc.aoc2023.day19
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.ImplicitUtils.AddMultispanToList
+import aoc.utils.ImplicitUtils.AddMultispanToSeq
 
 import aoc.utils.LongRange
 import scala.collection.mutable

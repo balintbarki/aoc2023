@@ -1,7 +1,7 @@
 package aoc.aoc2023.day14
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.ImplicitUtils.AddMultispanToList
+import aoc.utils.ImplicitUtils.AddMultispanToSeq
 import aoc.utils.Matrix
 
 case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") {

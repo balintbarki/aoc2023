@@ -3,11 +3,13 @@ package aoc.aoc2024.day13
 import aoc.aoc2024.DailyPuzzle2024
 import aoc.utils.ImplicitUtils.AddMultispanToSeq
 
+import scala.collection.immutable.NumericRange
+
 case object Day13Puzzle extends DailyPuzzle2024(13, "Claw Contraption") {
 
   override def calculatePart1(lines: Seq[String]): Long = calculate(lines, 0, 100)
 
-  override def calculatePart2(lines: Seq[String]): Long = ???
+  override def calculatePart2(lines: Seq[String]): Long = calculate(lines, 10000000000000L, Long.MaxValue)
 
   private def calculate(lines: Seq[String], unitConversionToAdd: Long, maxButtonPushCnt: Long) =
     parseInput(lines, unitConversionToAdd).flatMap(_.findCheapestWin(maxButtonPushCnt)).sum
@@ -37,21 +39,28 @@ case object Day13Puzzle extends DailyPuzzle2024(13, "Claw Contraption") {
     private val tokensForB = 1L
 
     def findCheapestWin(maxButtonPush: Long): Option[Long] = {
-      val maxA = Seq(prizeX / ax, prizeY / ay).max.min(maxButtonPush)
-      val maxB = Seq(prizeX / bx, prizeY / by).max.min(maxButtonPush)
+      val maxA: Long = Seq(prizeX / ax, prizeY / ay).max.min(maxButtonPush)
 
-      (0L to maxA).flatMap { aPushCnt =>
-        (0L to maxB).flatMap { bPushCnt =>
-          if ((aPushCnt * ax + bPushCnt * bx == prizeX) && (aPushCnt * ay + bPushCnt * by == prizeY)) {
-            Some(aPushCnt * tokensForA + bPushCnt * tokensForB)
+      var fewestTokensOpt: Option[Long] = None
+      var aPushCnt = 0
+      while (aPushCnt < maxA) {
+
+        val remainingX = prizeX - aPushCnt * ax
+        val remainingY = prizeY - aPushCnt * ay
+
+        val expectedBCnt = remainingX / bx
+        if ((expectedBCnt == remainingY / by) && (remainingX % bx == 0) && (remainingY % by == 0)) {
+          val tokens = aPushCnt * tokensForA + expectedBCnt * tokensForB
+          fewestTokensOpt match {
+            case None               => fewestTokensOpt = Some(tokens)
+            case Some(fewestTokens) => if (tokens < fewestTokens) fewestTokensOpt = Some(tokens)
           }
-          else
-            None
         }
-      } match {
-        case Seq() => None
-        case items => Some(items.min)
+
+        aPushCnt += 1
       }
+
+      fewestTokensOpt
     }
   }
 }

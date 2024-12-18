@@ -2,8 +2,9 @@ package aoc.aoc2024.day13
 
 import aoc.aoc2024.DailyPuzzle2024
 import aoc.utils.ImplicitUtils.AddMultispanToSeq
+import aoc.utils.math.DiophantineEquation
 
-import scala.collection.immutable.NumericRange
+import scala.collection.mutable
 
 case object Day13Puzzle extends DailyPuzzle2024(13, "Claw Contraption") {
 
@@ -12,7 +13,7 @@ case object Day13Puzzle extends DailyPuzzle2024(13, "Claw Contraption") {
   override def calculatePart2(lines: Seq[String]): Long = calculate(lines, 10000000000000L, Long.MaxValue)
 
   private def calculate(lines: Seq[String], unitConversionToAdd: Long, maxButtonPushCnt: Long) =
-    parseInput(lines, unitConversionToAdd).flatMap(_.findCheapestWin(maxButtonPushCnt)).sum
+    parseInput(lines, unitConversionToAdd).flatMap(_.findCheapestWin).sum
 
 
   private def parseInput(lines: Seq[String], unitConversionToAdd: Long) = {
@@ -33,34 +34,33 @@ case object Day13Puzzle extends DailyPuzzle2024(13, "Claw Contraption") {
     }
   }
 
-  private case class MachineConfig(ax: Long, ay: Long, bx: Long, by: Long, prizeX: Long, prizeY: Long) {
+  private case class MachineConfig(ax: Long, ay: Long, bx: Long, by: Long, px: Long, py: Long) {
 
     private val tokensForA = 3L
     private val tokensForB = 1L
 
-    def findCheapestWin(maxButtonPush: Long): Option[Long] = {
-      val maxA: Long = Seq(prizeX / ax, prizeY / ay).max.min(maxButtonPush)
+    def findCheapestWin: Option[Long] = {
 
-      var fewestTokensOpt: Option[Long] = None
-      var aPushCnt = 0
-      while (aPushCnt < maxA) {
+      val B_denominator = ay * bx - ax * by
+      if (B_denominator != 0) {
+        val B_nominator = ay * px - ax * py
 
-        val remainingX = prizeX - aPushCnt * ax
-        val remainingY = prizeY - aPushCnt * ay
+        if (B_nominator % B_denominator == 0) {
+          val B = (ay * px - ax * py) / (bx * ay - by * ax)
+          val A_nominator = px - bx * B
 
-        val expectedBCnt = remainingX / bx
-        if ((expectedBCnt == remainingY / by) && (remainingX % bx == 0) && (remainingY % by == 0)) {
-          val tokens = aPushCnt * tokensForA + expectedBCnt * tokensForB
-          fewestTokensOpt match {
-            case None               => fewestTokensOpt = Some(tokens)
-            case Some(fewestTokens) => if (tokens < fewestTokens) fewestTokensOpt = Some(tokens)
+          if (A_nominator % ax == 0) {
+            val A = A_nominator / ax
+            Some(A * tokensForA + B * tokensForB)
           }
+          else
+            None
         }
-
-        aPushCnt += 1
+        else
+          None
       }
-
-      fewestTokensOpt
+      else
+        None
     }
   }
 }

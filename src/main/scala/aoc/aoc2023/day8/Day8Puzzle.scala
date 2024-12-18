@@ -1,6 +1,7 @@
 package aoc.aoc2023.day8
 
 import aoc.aoc2023.DailyPuzzle2023
+import aoc.utils.math.Math.lcm
 
 import scala.annotation.tailrec
 
@@ -71,9 +72,4 @@ case object Day8Puzzle extends DailyPuzzle2023(8, "Haunted Wasteland") {
 
     (steps, desertMap)
   }
-
-  @tailrec
-  private def gcd(a: BigInt, b: BigInt): BigInt = if (b == 0) a.abs else gcd(b, a % b)
-
-  private def lcm(list: Seq[BigInt]): BigInt = list.foldLeft(BigInt(1))((a, b) => (a / gcd(a, b)) * b)
 }

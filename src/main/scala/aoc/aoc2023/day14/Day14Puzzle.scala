@@ -2,23 +2,23 @@ package aoc.aoc2023.day14
 
 import aoc.aoc2023.DailyPuzzle2023
 import aoc.utils.ImplicitUtils.AddMultispanToSeq
-import aoc.utils.Matrix
+import aoc.utils.ImmutableMatrix
 
 case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") {
 
   override def calculatePart1(lines: Seq[String]): Long = {
 
-    val result = tiltNorth(Matrix.fromStrings(lines))
+    val result = tiltNorth(ImmutableMatrix.fromStrings(lines))
     calculateNorthBeamLoad(result)
   }
 
   override def calculatePart2(lines: Seq[String]): Long = {
 
-    val result = runCycle(Matrix.fromStrings(lines), 1000000000)
+    val result = runCycle(ImmutableMatrix.fromStrings(lines), 1000000000)
     calculateNorthBeamLoad(result)
   }
 
-  def runCycle(matrix: Matrix[Char], times: Long): Matrix[Char] = {
+  def runCycle(matrix: ImmutableMatrix[Char], times: Long): ImmutableMatrix[Char] = {
 
     var cycle: Long = 0
     var result = matrix
@@ -48,25 +48,25 @@ case object Day14Puzzle extends DailyPuzzle2023(14, "Parabolic Reflector Dish") 
     result
   }
 
-  private def calculateNorthBeamLoad(matrix: Matrix[Char]): Int = {
+  private def calculateNorthBeamLoad(matrix: ImmutableMatrix[Char]): Int = {
     matrix.rows.indices.map(index => matrix.rows(index).count(_ == 'O') * (matrix.rows.length - index)).sum
   }
 
-  private def tiltWest(matrix: Matrix[Char]): Matrix[Char] = {
-    Matrix.fromStrings(matrix.rows
+  private def tiltWest(matrix: ImmutableMatrix[Char]): ImmutableMatrix[Char] = {
+    ImmutableMatrix.fromStrings(matrix.rows
       .map(row => row.multiSpan(_ == '#').map(_.sortWith(customLeftSort)).map(_.mkString).mkString))
   }
 
-  private def tiltEast(matrix: Matrix[Char]): Matrix[Char] = {
-    Matrix.fromStrings(matrix.rows
+  private def tiltEast(matrix: ImmutableMatrix[Char]): ImmutableMatrix[Char] = {
+    ImmutableMatrix.fromStrings(matrix.rows
       .map(row => row.multiSpan(_ == '#').map(_.sortWith(customRightSort)).map(_.mkString).mkString))
   }
 
-  private def tiltNorth(matrix: Matrix[Char]): Matrix[Char] = {
+  private def tiltNorth(matrix: ImmutableMatrix[Char]): ImmutableMatrix[Char] = {
     tiltWest(matrix.transpose).transpose
   }
 
-  private def tiltSouth(matrix: Matrix[Char]): Matrix[Char] = {
+  private def tiltSouth(matrix: ImmutableMatrix[Char]): ImmutableMatrix[Char] = {
     tiltEast(matrix.transpose).transpose
   }
 

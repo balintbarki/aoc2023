@@ -2,7 +2,7 @@ package aoc.aoc2024.day6
 
 import aoc.aoc2024.DailyPuzzle2024
 import aoc.aoc2024.day6.Day6Puzzle.Tile
-import aoc.utils.{Direction, Matrix}
+import aoc.utils.{Direction, ImmutableMatrix}
 
 import scala.annotation.tailrec
 import scala.collection.mutable
@@ -41,7 +41,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
     }
   }
 
-  private def printMap(map: Matrix[Tile]): Unit = {
+  private def printMap(map: ImmutableMatrix[Tile]): Unit = {
     map.elements.map(line => line.map {
       case tile: Walkable if tile.visited => 'O'
       case _: Walkable                    => '.'
@@ -51,7 +51,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
     println()
   }
 
-  private def walkMap(map: Matrix[Tile], startX: Int, startY: Int): (Seq[(Int, Int)], Boolean, Boolean) = {
+  private def walkMap(map: ImmutableMatrix[Tile], startX: Int, startY: Int): (Seq[(Int, Int)], Boolean, Boolean) = {
 
     val cacheFindTiles: mutable.Map[(Int, Int, Direction), (Seq[(Int, Int)], Boolean)] = mutable.Map.empty
 
@@ -98,7 +98,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
     doWalkMap(startX, startY, Direction.Up, Seq((startX, startY)))
   }
 
-  private def loadMapAndStartCoordinates(lines: Seq[String]): (Matrix[Tile], (Int, Int)) = {
+  private def loadMapAndStartCoordinates(lines: Seq[String]): (ImmutableMatrix[Tile], (Int, Int)) = {
     var (startX, startY) = (-1, -1)
     val tiles = lines.indices.map(lineIdx => lines(lineIdx).indices.map(colIdx => lines(lineIdx)(colIdx) match {
       case '.' => new Walkable()
@@ -107,7 +107,7 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
       case c   => throw new IllegalArgumentException(s"Unexpected character in input: $c")
     }))
 
-    (Matrix(tiles), (startX, startY))
+    (ImmutableMatrix(tiles), (startX, startY))
   }
 
   abstract class Tile() extends Cloneable {
@@ -146,10 +146,10 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
 
 object TileMatrixExtension {
 
-  implicit class MatrixCopy(matrix: Matrix[Tile]) {
-    def copy: Matrix[Tile] = {
+  implicit class MatrixCopy(matrix: ImmutableMatrix[Tile]) {
+    def copy: ImmutableMatrix[Tile] = {
       val rows = matrix.rows
-      Matrix(rows.map(row => row.map(element => element.copy)))
+      ImmutableMatrix(rows.map(row => row.map(element => element.copy)))
     }
   }
 }

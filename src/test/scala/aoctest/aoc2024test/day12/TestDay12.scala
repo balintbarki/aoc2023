@@ -4,7 +4,6 @@ import aoc.aoc2024.day12.Day12Puzzle
 import aoctest.PuzzleTest
 import org.junit.{Ignore, Test}
 
-@Ignore
 class TestDay12 extends PuzzleTest(Day12Puzzle) {
 
   @Test

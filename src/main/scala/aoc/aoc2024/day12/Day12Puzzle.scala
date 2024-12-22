@@ -1,7 +1,7 @@
 package aoc.aoc2024.day12
 
 import aoc.aoc2024.DailyPuzzle2024
-import aoc.utils.Matrix
+import aoc.utils.ImmutableMatrix
 
 case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
@@ -11,7 +11,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
     val garden = createGarden(lines)
 
-    val allPlots = garden.allElements
+    val allPlots = garden.flattenedElements
     allPlots.map(_.regionId).distinct.map { regionId =>
       val plotsInRegion = allPlots.filter(_.regionId == regionId)
       plotsInRegion.map(_.fenceCnt).sum * plotsInRegion.size
@@ -21,7 +21,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
   override def calculatePart2(lines: Seq[String]): Long = {
     val garden = createGarden(lines)
 
-    val allPlots = garden.allElements
+    val allPlots = garden.flattenedElements
     allPlots.map(_.regionId).distinct.map { regionId =>
       val plotsInRegion = allPlots.filter(_.regionId == regionId)
       val cornerCnt = plotsInRegion.map(plot => plot.cornerCnt).sum
@@ -29,7 +29,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
     }.sum
   }
 
-  private def createGarden(lines: Seq[String]): Matrix[Plot] = {
+  private def createGarden(lines: Seq[String]): ImmutableMatrix[Plot] = {
     val garden = readGarden(lines)
     val plotCoordinateMap = garden.getCoordinateMap
 
@@ -85,7 +85,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
   }
 
   private def readGarden(lines: Seq[String]) =
-    Matrix(lines.map(line => line.map { c => new Plot(c) }))
+    ImmutableMatrix(lines.map(line => line.map { c => new Plot(c) }))
 
 
   private class Plot(val plantId: Char) {

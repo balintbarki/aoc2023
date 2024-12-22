@@ -1,7 +1,7 @@
 package aoc.aoc2024.day10
 
 import aoc.aoc2024.DailyPuzzle2024
-import aoc.utils.Matrix
+import aoc.utils.ImmutableMatrix
 
 import scala.collection.mutable
 
@@ -9,7 +9,7 @@ case object Day10Puzzle extends DailyPuzzle2024(10, "Hoof It") {
 
 
   override def calculatePart1(lines: Seq[String]): Long = {
-    val map = Matrix.fromStringsToInts(lines)
+    val map = ImmutableMatrix.fromStringsToInts(lines)
     val xMax = map.xSize - 1
     val yMax = map.ySize - 1
 
@@ -47,7 +47,7 @@ case object Day10Puzzle extends DailyPuzzle2024(10, "Hoof It") {
   }
 
   override def calculatePart2(lines: Seq[String]): Long = {
-    val map = Matrix.fromStringsToInts(lines)
+    val map = ImmutableMatrix.fromStringsToInts(lines)
 
     val xMax = map.xSize - 1
     val yMax = map.ySize - 1

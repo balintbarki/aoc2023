@@ -1,7 +1,7 @@
 package aoc.aoc2023.day17
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.{Direction, Matrix}
+import aoc.utils.{Direction, ImmutableMatrix}
 
 import scala.collection.mutable
 
@@ -11,7 +11,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
   val maxConsecutiveSteps = 2
 
   def findPath(
-    startX: Int, startY: Int, targetX: Int, targetY: Int, blockMatrix: Matrix[Block],
+    startX: Int, startY: Int, targetX: Int, targetY: Int, blockMatrix: ImmutableMatrix[Block],
     lastSteps: Seq[Direction], directions: Seq[Direction], jobQueue: mutable.Queue[() => Unit]): Unit = {
 
     def stepIfPossible(
@@ -99,7 +99,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
   }
 
   override def calculatePart1(lines: Seq[String]): Long = {
-    val blockMatrix = Matrix.fromStrings(lines).map(c => new Block(c.asDigit))
+    val blockMatrix = ImmutableMatrix.fromStrings(lines).map(c => new Block(c.asDigit))
     val startX = 0
     val startY = 0
     val targetX = blockMatrix.columns.length - 1
@@ -130,7 +130,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
   override def calculatePart2(lines: Seq[String]): Long = ???
 
 
-  private def printBlockMatrix(blockMatrix: Matrix[Block]): Unit = {
+  private def printBlockMatrix(blockMatrix: ImmutableMatrix[Block]): Unit = {
     blockMatrix
       .map(item => s"${item.heatLoss} (${
         item.minHeatLossPerDirPerStepLeft.map { case (key, value) => s"${key.toString.take(1)}:${value.mkString(",")}" }

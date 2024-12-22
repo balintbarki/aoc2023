@@ -4,6 +4,8 @@ import aoc.aoc2024.day1.Day1Puzzle
 import aoc.aoc2024.day10.Day10Puzzle
 import aoc.aoc2024.day11.Day11Puzzle
 import aoc.aoc2024.day12.Day12Puzzle
+import aoc.aoc2024.day13.Day13Puzzle
+import aoc.aoc2024.day14.Day14Puzzle
 import aoc.aoc2024.day2.Day2Puzzle
 import aoc.aoc2024.day3.Day3Puzzle
 import aoc.aoc2024.day4.Day4Puzzle
@@ -28,5 +30,7 @@ object PuzzleCollection2024 extends PuzzleCollection(2024) {
     Day10Puzzle,
     Day11Puzzle,
     Day12Puzzle,
+    Day13Puzzle,
+    Day14Puzzle,
   )
 }

@@ -22,6 +22,8 @@ class Matrix[T](val elements: mutable.Seq[mutable.Seq[T]]) {
 
   def columns: Seq[Seq[T]] = transpose.rows
 
+  def flattenedElements: mutable.Seq[T] = elements.flatten
+
   def get(x: Int, y: Int): T = elements(y)(x)
 
   def update(x: Int, y: Int, item: T): Unit = elements(y).update(x, item)

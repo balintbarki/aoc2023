@@ -1,7 +1,7 @@
 package aoc.aoc2024.day12
 
 import aoc.aoc2024.DailyPuzzle2024
-import aoc.utils.ImmutableMatrix
+import aoc.utils.Matrix
 
 case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
 
@@ -29,7 +29,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
     }.sum
   }
 
-  private def createGarden(lines: Seq[String]): ImmutableMatrix[Plot] = {
+  private def createGarden(lines: Seq[String]): Matrix[Plot] = {
     val garden = readGarden(lines)
     val plotCoordinateMap = garden.getCoordinateMap
 
@@ -85,7 +85,7 @@ case object Day12Puzzle extends DailyPuzzle2024(12, "Garden Groups") {
   }
 
   private def readGarden(lines: Seq[String]) =
-    ImmutableMatrix(lines.map(line => line.map { c => new Plot(c) }))
+    Matrix(lines.map(line => line.map { c => new Plot(c) }))
 
 
   private class Plot(val plantId: Char) {

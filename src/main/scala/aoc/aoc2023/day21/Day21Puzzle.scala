@@ -1,7 +1,7 @@
 package aoc.aoc2023.day21
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.ImmutableMatrix
+import aoc.utils.Matrix
 
 import scala.annotation.tailrec
 import scala.collection.mutable
@@ -11,7 +11,7 @@ case object Day21Puzzle extends DailyPuzzle2023(21, "Step Counter") {
   var stepCnt: Int = 0
 
   override def calculatePart1(lines: Seq[String]): Long = {
-    val input = ImmutableMatrix[Tile](lines.map(line => line.map(c => Tile(c)).toList).toList)
+    val input = Matrix[Tile](lines.map(line => line.map(c => Tile(c)).toList).toList)
 
     val coordinateMap = input.getCoordinateMap
 

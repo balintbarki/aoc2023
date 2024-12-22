@@ -1,7 +1,7 @@
 package aoc.aoc2024.day4
 
 import aoc.aoc2024.DailyPuzzle2024
-import aoc.utils.ImmutableMatrix
+import aoc.utils.Matrix
 
 case object Day4Puzzle extends DailyPuzzle2024(4, "Ceres Search") {
 
@@ -74,9 +74,9 @@ case object Day4Puzzle extends DailyPuzzle2024(4, "Ceres Search") {
   }
 
   private def transpose(lines: Seq[String]): Seq[String] =
-    ImmutableMatrix(lines.map(_.toList).toList).transpose.rows.map(_.mkString)
+    Matrix(lines.map(_.toList).toList).transpose.rows.map(_.mkString)
 
   private def rotateLeft(lines: Seq[String]): Seq[String] =
-    ImmutableMatrix(lines.map(_.toList).toList).rotateLeft.rows.map(_.mkString)
+    Matrix(lines.map(_.toList).toList).rotateLeft.rows.map(_.mkString)
 
 }

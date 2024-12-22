@@ -1,14 +1,14 @@
 package aoc.aoc2023.day16
 
 import aoc.aoc2023.DailyPuzzle2023
-import aoc.utils.{Direction, ImmutableMatrix}
+import aoc.utils.{Direction, Matrix}
 
 import scala.collection.mutable
 
 case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
 
-  def calculate(grid: ImmutableMatrix[Char], x: Int, y: Int, from: Direction): Int = {
-    val tiles: ImmutableMatrix[Tile] = grid.map(c => Tile(c))
+  def calculate(grid: Matrix[Char], x: Int, y: Int, from: Direction): Int = {
+    val tiles: Matrix[Tile] = grid.map(c => Tile(c))
 
     val jobQueue: mutable.Queue[() => Unit] = mutable.Queue.empty
 
@@ -21,13 +21,13 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
   }
 
   override def calculatePart1(lines: Seq[String]): Long = {
-    val grid = ImmutableMatrix.fromStrings(lines)
+    val grid = Matrix.fromStrings(lines)
 
     calculate(grid, 0, 0, Direction.Left)
   }
 
   override def calculatePart2(lines: Seq[String]): Long = {
-    val grid = ImmutableMatrix.fromStrings(lines)
+    val grid = Matrix.fromStrings(lines)
 
     val startPositions =
       grid.rows.indices.map(rowIdx => (0, rowIdx, Direction.Left)) ++
@@ -43,7 +43,7 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
   }
 
   private def runLight(
-    x: Int, y: Int, from: Direction, tiles: ImmutableMatrix[Tile], height: Int, width: Int,
+    x: Int, y: Int, from: Direction, tiles: Matrix[Tile], height: Int, width: Int,
     jobQueue: mutable.Queue[() => Unit]): Unit = {
 
     val tile = tiles.get(x, y)

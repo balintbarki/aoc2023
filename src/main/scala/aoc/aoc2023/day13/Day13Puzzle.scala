@@ -2,7 +2,7 @@ package aoc.aoc2023.day13
 
 import aoc.aoc2023.DailyPuzzle2023
 import aoc.utils.ImplicitUtils._
-import aoc.utils.ImmutableMatrix
+import aoc.utils.Matrix
 
 case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
 
@@ -17,7 +17,7 @@ case object Day13Puzzle extends DailyPuzzle2023(13, "Point of Incidence") {
   private def calculate(lines: Seq[String], allowedDiff: Int): Long = {
     val inputs = lines.toList.multiSpanWithoutDelimiter(_.isEmpty)
     inputs.map { input =>
-      val matrix = ImmutableMatrix.fromStrings(input)
+      val matrix = Matrix.fromStrings(input)
       val rowMirrorLineOpt = (1 until matrix.rows.length)
         .find(row => (matrix ~= matrix.mirrorAtRow(row)).sumAll == allowedDiff * 2)
         .getOrElse(0)

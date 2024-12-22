@@ -2,7 +2,7 @@ package aoc.aoc2023.day23
 
 import aoc.aoc2023.DailyPuzzle2023
 import aoc.utils.graphs.{DirectedGraph, DirectedGraphNode}
-import aoc.utils.{Direction, ImmutableMatrix}
+import aoc.utils.{Direction, Matrix}
 
 import scala.collection.mutable
 
@@ -19,7 +19,7 @@ case object Day23Puzzle extends DailyPuzzle2023(23, "A Long Walk") {
     val entry: DirectedGraphNode = DirectedGraphNode("Entry")
     val exit: DirectedGraphNode = DirectedGraphNode("Exit")
 
-    val matrix = ImmutableMatrix(lines.map(line => line.map(c => Tile(c))))
+    val matrix = Matrix(lines.map(line => line.map(c => Tile(c))))
     val tileMap = matrix.getCoordinateMap
 
     val startCoordinates = (lines.head.indexOf("."), 0)

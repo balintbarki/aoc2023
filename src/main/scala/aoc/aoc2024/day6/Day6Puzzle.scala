@@ -30,7 +30,8 @@ case object Day6Puzzle extends DailyPuzzle2024(6, "Guard Gallivant") {
 
     walkedTiles.drop(1).distinct.count { case (x, y) =>
       if (x != startX || y != startY) {
-        val mapWithObstacle = map.copy.updated(x, y, new ExtraObstacle())
+        val mapWithObstacle = map.copy
+        mapWithObstacle.update(x, y, new ExtraObstacle())
         val (_, _, loopFound) = walkMap(mapWithObstacle, startX, startY)
         //if (loopFound)
         //  printMap(mapWithObstacle)

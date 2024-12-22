@@ -136,7 +136,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
         item.minHeatLossPerDirPerStepLeft.map { case (key, value) => s"${key.toString.take(1)}:${value.mkString(",")}" }
           .mkString(",")
       })")
-      .print(35, separator = ';')
+      .print(35, separator = ";")
     println()
   }
 

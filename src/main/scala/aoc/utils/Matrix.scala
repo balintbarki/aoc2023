@@ -1,10 +1,8 @@
 package aoc.utils
 
-import aoc.aoc2024.day6.Day6Puzzle.Tile
-
 import scala.collection.mutable
 
-class Matrix[T](val elements: List[List[T]]) {
+class Matrix[T](val elements: mutable.Seq[mutable.Seq[T]]) {
 
   if (elements.nonEmpty && elements.head.nonEmpty)
     require(elements.forall(row => row.length == elements.head.length),
@@ -20,13 +18,13 @@ class Matrix[T](val elements: List[List[T]]) {
 
   override def hashCode(): Int = elements.map(_.hashCode()).hashCode()
 
-  def rows: List[List[T]] = elements
+  def rows: Seq[Seq[T]] = elements.map(_.toSeq).toSeq
 
-  def columns: List[List[T]] = transpose.rows
+  def columns: Seq[Seq[T]] = transpose.rows
 
   def get(x: Int, y: Int): T = elements(y)(x)
 
-  def updated(x: Int, y: Int, item: T): Matrix[T] = Matrix(elements.updated(y, elements(y).updated(x, item)))
+  def update(x: Int, y: Int, item: T): Unit = elements(y).update(x, item)
 
   def map[B](f: T => B): Matrix[B] = Matrix(
     elements.indices.map(row => elements.head.indices.map(column => f(elements(row)(column))).toList).toList)
@@ -37,7 +35,7 @@ class Matrix[T](val elements: List[List[T]]) {
     elements.flatten.find(p)
   }
 
-  def allElements: Seq[T] = elements.flatten
+  def allElements: Seq[T] = elements.flatten.toSeq
 
   def transpose: Matrix[T] =
     if (elements.isEmpty || elements.forall(_.isEmpty))
@@ -91,7 +89,7 @@ class Matrix[T](val elements: List[List[T]]) {
       "Number of rows and columns shall match for inequality")
     NumericMatrix(elements.indices
       .map(row => elements.head.indices
-        .map(column => if (this.elements(row)(column) == other.elements(row)(column)) 0 else 1).toList).toList)
+        .map(column => if (this.elements(row)(column) == other.elements(row)(column)) 0 else 1)))
   }
 
   def mirrorAtRow(row: Int): Matrix[T] = {
@@ -114,25 +112,26 @@ class Matrix[T](val elements: List[List[T]]) {
   def getCoordinateMap: Map[(Int, Int), T] = rows.indices
     .flatMap(rowIdx => columns.indices.map(colIdx => (colIdx, rowIdx) -> get(colIdx, rowIdx))).toMap
 
-  def print(minWidth: Int = 1, separator: Char = ' '): Unit = {
+  def print(minWidth: Int = 1, separator: String = " "): Unit = {
     rows.foreach(
-      row => println(row.map(item => String.format("%" + minWidth + "s", item.toString)).mkString(separator.toString)))
+      row => println(row.map(item => String.format("%" + minWidth + "s", item.toString)).mkString(separator)))
   }
+
+  def mirrorHorizontally(): Matrix[T] = Matrix(elements.indices.map { rowIdx => elements(rowIdx).reverse })
+
+  def mirrorVertically(): Matrix[T] = Matrix(elements.reverse)
 }
 
 object Matrix {
 
-  def apply[T](elements: List[List[T]]): Matrix[T] = new Matrix(elements)
+  def apply[T](elements: mutable.Seq[mutable.Seq[T]]): Matrix[T] = new Matrix(elements)
 
-  def apply[T](elements: Seq[Seq[T]]): Matrix[T] = new Matrix(elements.map(_.toList).toList)
-
-  def unapply[T](matrix: Matrix[T]): List[List[T]] = matrix.elements
+  def apply[T](elements: scala.collection.Seq[scala.collection.Seq[T]]): Matrix[T] = new Matrix(
+    mutable.Seq.from(elements.map(mutable.Seq.from(_))))
 
   def fromStrings(lines: List[String]): Matrix[Char] = Matrix(lines.map(_.toList))
 
   def fromStrings(lines: Seq[String]): Matrix[Char] = fromStrings(lines.toList)
 
   def fromStringsToInts(lines: Seq[String]): Matrix[Int] = Matrix(lines.map(line => line.map(c => c - '0')).toList)
-
-
 }

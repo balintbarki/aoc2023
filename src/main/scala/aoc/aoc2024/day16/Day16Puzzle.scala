@@ -14,15 +14,26 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
 
   override def calculatePart1(lines: Seq[String]): Long = {
     val maze = getInput(lines)
-
-    val result = findCheapestPath(maze)
+    val result = findCheapestPaths(maze)
 
     result
   }
 
-  override def calculatePart2(lines: Seq[String]): Long = ???
+  override def calculatePart2(lines: Seq[String]): Long = {
+    val maze = getInput(lines)
+    val cheapestPathPrice = findCheapestPaths(maze)
 
-  private def findCheapestPath(maze: Matrix[MazeElement]): Long = {
+    val end = maze.findOrThrow(_ == End)
+
+
+    val elementsInCheapestPaths = end.cheapestCostsFrom.filter { case (_, cost) => cost == cheapestPathPrice }.keys
+      .flatMap { key => end.cheapestPathsFrom(key) }.flatten.toSeq.distinct
+
+    // Account for the End item as well
+    elementsInCheapestPaths.size + 1
+  }
+
+  private def findCheapestPaths(maze: Matrix[MazeElement]): Long = {
     val jobQueue: mutable.Queue[() => Unit] = mutable.Queue.empty
     val coordinateMap = maze.getCoordinateMap
     val ((startX, startY), _) = coordinateMap.find { case (_, element) => element == Start }
@@ -34,7 +45,6 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
       jobQueue.dequeue()()
     }
 
-
     val end = maze.findOrThrow(_ == End)
     end.cheapestCostsFrom.values.min
   }
@@ -42,6 +52,7 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
   private def findPathFrom(
     jobQueue: mutable.Queue[() => Unit], maze: Matrix[MazeElement], x: Int, y: Int, fromDir: Direction): Unit = {
 
+    val element = maze.getOrThrow(x, y)
     val currentCostFrom = maze.getOrThrow(x, y).getCheapestCostComingFrom(fromDir)
     val toDir = fromDir.opposite
 
@@ -49,15 +60,27 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
       (toDir.rotateLeft, 1001),
       (toDir, 1),
       (toDir.rotateRight, 1001)).foreach { case (directionTo, stepCost) =>
-      val comingFrom = directionTo.opposite
+
       val (neighborX, neighborY) = directionTo.adjustCoordinates(x, y)
       val neighborOpt = maze.get(neighborX, neighborY)
       neighborOpt match {
         case Some(neighbor: WalkableMazeElement) =>
           val newCost = if (Long.MaxValue - stepCost > currentCostFrom) currentCostFrom + stepCost else Long.MaxValue
-          if (newCost < neighbor.getCheapestCostComingFrom(comingFrom)) {
+          val comingFrom = directionTo.opposite
+          val neighborCheapestCostFrom = neighbor.getCheapestCostComingFrom(comingFrom)
+          val cheapestPathsToAdd = element.cheapestPathsFrom(fromDir).map(_ ++ mutable.Seq(element))
+          if (newCost < neighborCheapestCostFrom) {
             neighbor.cheapestCostsFrom.addOne(comingFrom, newCost)
-            jobQueue.enqueue(() => findPathFrom(jobQueue, maze, neighborX, neighborY, directionTo.opposite))
+
+            // Update the cheapest path with the new one
+            neighbor.cheapestPathsFrom.addOne(comingFrom, cheapestPathsToAdd)
+
+            jobQueue.enqueue(() => findPathFrom(jobQueue, maze, neighborX, neighborY, comingFrom))
+          }
+          else if (newCost == neighborCheapestCostFrom) {
+            val neighborCheapestPathFrom = neighbor.cheapestPathsFrom(comingFrom)
+            // Add the cheapest path to the existing ones
+            neighbor.cheapestPathsFrom.update(comingFrom, neighborCheapestPathFrom ++ cheapestPathsToAdd)
           }
 
         case _ =>
@@ -86,10 +109,23 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
       map
     }
 
+    val cheapestPathsFrom: mutable.Map[Direction, mutable.Seq[mutable.Seq[MazeElement]]] = {
+      val map = mutable.Map.empty[Direction, mutable.Seq[mutable.Seq[MazeElement]]]
+      map.addOne(Direction.Up, mutable.Seq.empty)
+      map.addOne(Direction.Down, mutable.Seq.empty)
+      map.addOne(Direction.Left, mutable.Seq.empty)
+      map.addOne(Direction.Right, mutable.Seq.empty)
+      map
+    }
+
+    var partOfCheapestPath: Boolean = false
+
     def getCheapestCostComingFrom(dir: Direction): Long = cheapestCostsFrom
       .getOrElse(dir, throw new IllegalArgumentException(s"Unexpected direction: $dir"))
 
     def symbol: Char
+
+    override def toString: String = if (partOfCheapestPath) "O" else symbol.toString
   }
 
   private trait WalkableMazeElement extends MazeElement
@@ -109,10 +145,19 @@ case object Day16Puzzle extends DailyPuzzle2024(16, "Reindeer Maze") {
     cheapestCostsFrom.addOne(Direction.Left, 0)
     cheapestCostsFrom.addOne(Direction.Right, 0)
 
+    cheapestPathsFrom.addOne(Direction.Up, mutable.Seq(mutable.Seq.empty))
+    cheapestPathsFrom.addOne(Direction.Down, mutable.Seq(mutable.Seq.empty))
+    cheapestPathsFrom.addOne(Direction.Left, mutable.Seq(mutable.Seq.empty))
+    cheapestPathsFrom.addOne(Direction.Right, mutable.Seq(mutable.Seq.empty))
+
+    partOfCheapestPath = true
+
     override def symbol: Char = startSymbol
   }
 
   private object End extends WalkableMazeElement {
+    partOfCheapestPath = true
+
     override def symbol: Char = endSymbol
   }
 }

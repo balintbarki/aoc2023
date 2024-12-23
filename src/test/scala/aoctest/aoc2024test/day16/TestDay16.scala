@@ -6,6 +6,10 @@ import org.junit.{Ignore, Test}
 
 class TestDay16 extends PuzzleTest(Day16Puzzle) {
 
+  //
+  // Tests must be ran one by one, because apparently there is a dependency between them and
+  // some of them fails if ran together
+  //
   @Test
   def testDay16Part1(): Unit = {
     testPart1("7036")
@@ -18,11 +22,11 @@ class TestDay16 extends PuzzleTest(Day16Puzzle) {
 
   @Test
   def testDay16Part2(): Unit = {
-    testPart2("0")
+    testPart2("45")
   }
 
   @Test
   def testDay16Part2real(): Unit = {
-    testPart2Real("0")
+    testPart2Real("467")
   }
 }

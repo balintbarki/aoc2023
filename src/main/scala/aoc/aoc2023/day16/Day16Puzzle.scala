@@ -46,7 +46,7 @@ case object Day16Puzzle extends DailyPuzzle2023(16, "The Floor Will Be Lava") {
     x: Int, y: Int, from: Direction, tiles: Matrix[Tile], height: Int, width: Int,
     jobQueue: mutable.Queue[() => Unit]): Unit = {
 
-    val tile = tiles.get(x, y)
+    val tile = tiles.getOrThrow(x, y)
 
     def nextTileIsToUp(x: Int, y: Int): (Int, Int, Direction) = (x, y - 1, Direction.Down)
 

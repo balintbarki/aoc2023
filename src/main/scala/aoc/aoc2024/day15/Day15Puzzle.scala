@@ -55,8 +55,8 @@ case object Day15Puzzle extends DailyPuzzle2024(15, "Warehouse Woes") {
   }
 
   private def canPush(map: Matrix[MapElement], robotPosition: (Int, Int), direction: Direction): Boolean = {
-    val (neighborX, neighborY) = getNeighborCoordinates(robotPosition, direction)
-    map.get(neighborX, neighborY) match {
+    val (neighborX, neighborY) = direction.adjustCoordinates(robotPosition._1, robotPosition._2)
+    map.getOrThrow(neighborX, neighborY) match {
       case Wall                                             => false
       case Empty                                            => true
       case BoxLeftHalf if direction.isInstanceOf[Vertical]  =>
@@ -73,10 +73,10 @@ case object Day15Puzzle extends DailyPuzzle2024(15, "Warehouse Woes") {
   private def push(
     map: Matrix[MapElement], position: (Int, Int), direction: Direction): (Int, Int) = {
     val (x, y) = position
-    val element = map.get(x, y)
+    val element = map.getOrThrow(x, y)
     map.update(x, y, Empty)
     val (neighborX, neighborY) = getNeighborCoordinates(position, direction)
-    map.get(neighborX, neighborY) match {
+    map.getOrThrow(neighborX, neighborY) match {
       case Empty                                            =>
       case BoxLeftHalf if direction.isInstanceOf[Vertical]  =>
         push(map, (neighborX, neighborY), direction)

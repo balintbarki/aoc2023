@@ -24,7 +24,17 @@ class Matrix[T](val elements: mutable.Seq[mutable.Seq[T]]) {
 
   def flattenedElements: mutable.Seq[T] = elements.flatten
 
-  def get(x: Int, y: Int): T = elements(y)(x)
+  def get(x: Int, y: Int): Option[T] = if ((0 <= x) && (x < xSize) && (0 <= y) && (y < ySize))
+    Some(elements(y)(x))
+  else
+    None
+
+  def get(coordinates: (Int, Int)): Option[T] = get(coordinates._1, coordinates._2)
+
+  def getOrThrow(x: Int, y: Int): T = get(x, y)
+    .getOrElse(throw new IllegalArgumentException(s"Matrix element not found at position ($x, $y)"))
+
+  def getOrThrow(coordinates: (Int, Int)): T = getOrThrow(coordinates._1, coordinates._2)
 
   def update(x: Int, y: Int, item: T): Unit = elements(y).update(x, item)
 
@@ -36,6 +46,8 @@ class Matrix[T](val elements: mutable.Seq[mutable.Seq[T]]) {
   def find(p: T => Boolean): Option[T] = {
     elements.flatten.find(p)
   }
+
+  def findOrThrow(p: T => Boolean): T = find(p).getOrElse(throw new IllegalArgumentException(s"Element not found"))
 
   def allElements: Seq[T] = elements.flatten.toSeq
 
@@ -112,7 +124,9 @@ class Matrix[T](val elements: mutable.Seq[mutable.Seq[T]]) {
   def mirrorAtColumn(column: Int): Matrix[T] = transpose.mirrorAtRow(column).transpose
 
   def getCoordinateMap: Map[(Int, Int), T] = rows.indices
-    .flatMap(rowIdx => columns.indices.map(colIdx => (colIdx, rowIdx) -> get(colIdx, rowIdx))).toMap
+    .flatMap(
+      rowIdx => columns.indices.flatMap(colIdx => get(colIdx, rowIdx).map(element => (colIdx, rowIdx) -> element)))
+    .toMap
 
   def print(minWidth: Int = 1, separator: String = " "): Unit = {
     rows.foreach(

@@ -3,7 +3,7 @@ package aoctest.utils
 import aoc.utils.{Matrix, NumericMatrix}
 import org.junit.{Assert, Test}
 
-class TestImmutableMatrix {
+class TestMatrix {
   private val testData1 = List()
   private val testData2 = List(List())
   private val testData3 = List(List(3))

@@ -18,7 +18,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
       from: Block, dir: Direction, xCond: Boolean, yCond: Boolean, newX: Int, newY: Int): Unit = {
       if (xCond && yCond) {
 
-        val stepTarget = blockMatrix.get(newX, newY)
+        val stepTarget = blockMatrix.getOrThrow(newX, newY)
         val lastSameStepsToDir = lastSteps.count(_ == dir)
 
         // Step is possible if there are less than the specified max consecutive steps into this direction
@@ -77,8 +77,8 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
       }
     }
 
-    val startBlock = blockMatrix.get(startX, startY)
-    val targetBlock = blockMatrix.get(targetX, targetY)
+    val startBlock = blockMatrix.getOrThrow(startX, startY)
+    val targetBlock = blockMatrix.getOrThrow(targetX, targetY)
 
     if (startBlock != targetBlock) {
       if (directions.contains(Direction.Up))
@@ -104,7 +104,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
     val startY = 0
     val targetX = blockMatrix.columns.length - 1
     val targetY = blockMatrix.rows.length - 1
-    val startBlock = blockMatrix.get(startX, startY)
+    val startBlock = blockMatrix.getOrThrow(startX, startY)
     startBlock.minHeatLossPerDirPerStepLeft
       .update(Direction.Down,
         Seq.fill(maxConsecutiveSteps)(0))
@@ -124,7 +124,7 @@ case object Day17Puzzle extends DailyPuzzle2023(17, "Clumsy Crucible") {
 
     printBlockMatrix(blockMatrix)
 
-    blockMatrix.get(targetX, targetY).minHeatLossPerDirPerStepLeft.map { case (_, values) => values.min }.min
+    blockMatrix.getOrThrow(targetX, targetY).minHeatLossPerDirPerStepLeft.map { case (_, values) => values.min }.min
   }
 
   override def calculatePart2(lines: Seq[String]): Long = ???

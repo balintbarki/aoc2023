@@ -8,7 +8,7 @@ class TestDay17 extends PuzzleTest(Day17Puzzle) {
 
   @Test
   def testDay17Part1(): Unit = {
-    testPart1("4635635210")
+    testPart1("4635635210", Some(testInputPathPart1))
   }
 
   @Test
@@ -18,7 +18,7 @@ class TestDay17 extends PuzzleTest(Day17Puzzle) {
 
   @Test
   def testDay17Part2(): Unit = {
-    testPart2("0")
+    testPart2("117440", Some(testInputPathPart2))
   }
 
   @Test

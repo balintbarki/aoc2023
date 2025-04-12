@@ -18,46 +18,72 @@ case object Day17Puzzle extends DailyPuzzle2024(17, "Chronospatial Computer") {
 
   override def calculatePart1(lines: Seq[String]): Long = {
     val computer = getInput(lines)
-
     val output = computer.runProgram
 
     println(s"Output: ${output.mkString(",")}")
     output.mkString.toLong
   }
 
-  override def calculatePart2(lines: Seq[String]): Long = ???
+  override def calculatePart2(lines: Seq[String]): Long = {
+
+    val computer = getInput(lines)
+    val A_max_bits = 10
+    val A_max_value = math.pow(2, A_max_bits).toInt
+    val program = computer.program
+
+    def findValues(A_values_so_far: Seq[BigInt], outputBytesCovered: Int): Seq[BigInt] = {
+      if (outputBytesCovered == program.size) {
+        A_values_so_far
+      }
+      else {
+        val expectedOutput = program.takeRight(outputBytesCovered + 1)
+        val potentialAs = A_values_so_far.map(_ * 8).flatMap { possibleA =>
+          (0 to A_max_value).map(BigInt(_)).filter { A_lowest_3_bit =>
+            val testComputer = new Computer(possibleA + A_lowest_3_bit, program)
+            testComputer.runProgram == expectedOutput
+          }
+        }
+        potentialAs
+      }
+    }
+
+    val possibleAValues = findValues(Seq.empty, 0)
+
+    possibleAValues.min.toLong
+  }
 
   private def getInput(lines: Seq[String]): Computer = {
     val ra = BigInt(lines.head.dropWhile(_ != ':').drop(2).trim)
-    val rb = BigInt(lines(1).dropWhile(_ != ':').drop(2).trim)
-    val rc = BigInt(lines(2).dropWhile(_ != ':').drop(2).trim)
     val program = lines(4).dropWhile(_ != ':').drop(2).trim.split(",").map(_.toInt)
 
-    new Computer(ra, rb, rc, program)
+    new Computer(ra, program)
   }
 
-  private class Computer(ra: BigInt, rb: BigInt, rc: BigInt, program: Seq[Int]) {
+  private def doubleToBigInt(value: Double): BigInt =
+    BigDecimal.double2bigDecimal(value).setScale(0, BigDecimal.RoundingMode.DOWN).toBigInt
 
-    private val output: ListBuffer[BigInt] = ListBuffer.empty
-    private var a = ra
-    private var b = rb
-    private var c = rc
+  private class Computer(val ra: BigInt, val program: Seq[Int]) {
+
+    private val output: ListBuffer[Int] = ListBuffer.empty
+    private var a: BigInt = ra
+    private var b: BigInt = 0
+    private var c: BigInt = 0
     private var pc = 0
 
-    def runProgram: Seq[BigInt] = {
+    def runProgram: Seq[Int] = {
       while (pc < program.size)
         runCommand()
 
       output.toSeq
     }
 
-    private def writeToOutput(value: BigInt) = output.addOne(value)
+    private def writeToOutput(value: Int): Unit = output.addOne(value)
 
     private def runCommand(): Unit = {
 
       def xdv(combo: BigInt): (BigInt, Int) = {
         val denom = math.pow(2, combo.toDouble)
-        (BigDecimal.double2bigDecimal(a.doubleValue / denom).setScale(0, BigDecimal.RoundingMode.DOWN).toBigInt, 2)
+        (doubleToBigInt(a.doubleValue / denom), 2)
       }
 
       Try {
@@ -99,7 +125,7 @@ case object Day17Puzzle extends DailyPuzzle2024(17, "Chronospatial Computer") {
             2
 
           case _ if opCode == out =>
-            writeToOutput(combo % 8)
+            writeToOutput((combo % 8).toInt)
             2
 
           case _ if opCode == bdv =>
